@@ -14,35 +14,30 @@
         .page-content.active { display: block; }
         input, textarea { background: #2d2833 !important; border: 1px solid #3f3947 !important; color: white !important; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
         
-        /* Modal & Animation Styles */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
         
         #successOverlay { display: none; position: fixed; inset: 0; background: #1a161f; z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
-        
-        .checkmark-circle {
-            width: 100px; height: 100px; border: 5px solid #22c55e; border-radius: 50%;
-            display: flex; align-items: center; justify-content: center;
-            animation: scaleUp 0.5s ease-out forwards;
-        }
+        .checkmark-circle { width: 100px; height: 100px; border: 5px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: scaleUp 0.5s ease-out forwards; }
         @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
+
+        /* Screenshot Preview Style */
+        #screenshotPreview { display: none; width: 100px; height: 100px; object-fit: cover; border-radius: 10px; margin: 10px auto; border: 2px solid #ec4899; }
     </style>
 </head>
 <body class="pb-24">
 
     <div id="successOverlay">
         <div class="checkmark-circle">
-            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
-            </svg>
+            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
         </div>
-        <h2 class="text-2xl font-bold mt-6 text-white">Order Confirmed!</h2>
-        <p class="text-gray-400 mt-2">Checking payment status...</p>
+        <h2 class="text-2xl font-bold mt-6 text-white">Order Received!</h2>
+        <p class="text-gray-400 mt-2 text-center px-6">We are verifying your payment screenshot. Check your WhatsApp for updates.</p>
     </div>
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/95 backdrop-blur-md z-50">
         <div class="flex justify-between items-center bg-[#2d2833] rounded-full px-4 py-2.5">
-            <span class="font-bold text-pink-500 ml-2">BAG STORE</span>
+            <span class="font-bold text-pink-500 ml-2 uppercase tracking-widest">Bag Store</span>
             <div class="relative" onclick="showPage('cartPage', document.getElementById('cartBtn'))">
                 <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
                 <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
@@ -58,7 +53,7 @@
     <div id="cartPage" class="page-content p-5">
         <h2 class="text-xl font-bold mb-4 text-center">Your Cart</h2>
         <div id="cartList" class="space-y-4 mb-6"></div>
-        <div id="cartSummary" class="hidden border-t border-gray-800 pt-4">
+        <div id="cartSummary" class="hidden border-t border-gray-800 pt-4 text-center">
             <div class="flex justify-between text-lg font-bold mb-6"><span>Total:</span><span id="cartTotal">₹0</span></div>
             <button onclick="openCheckout()" class="w-full bg-pink-600 py-3 rounded-xl font-bold">PROCEED TO CHECKOUT</button>
         </div>
@@ -68,53 +63,64 @@
     <div id="checkoutPage" class="page-content p-5">
         <div class="flex items-center mb-6">
             <button onclick="showPage('cartPage')" class="mr-4 text-pink-500">← Back</button>
-            <h2 class="text-xl font-bold">Address</h2>
+            <h2 class="text-xl font-bold">Shipping Details</h2>
         </div>
         <form class="space-y-4" onsubmit="handlePayment(event)">
             <input type="text" placeholder="Full Name" required>
-            <input type="tel" placeholder="Phone Number" required pattern="[0-9]{10}">
+            <input type="tel" placeholder="Mobile Number" required pattern="[0-9]{10}">
             <input type="number" placeholder="Pincode" required>
-            <textarea rows="3" placeholder="Full Address" required></textarea>
-            <button type="submit" class="w-full bg-pink-600 py-4 rounded-xl font-bold mt-6">PAY & CONFIRM</button>
+            <textarea rows="3" placeholder="Full Address with Landmark" required></textarea>
+            <button type="submit" class="w-full bg-pink-600 py-4 rounded-xl font-bold mt-6">GO TO PAYMENT</button>
         </form>
     </div>
 
     <div id="qrModal" class="modal">
         <div class="bg-[#2d2833] p-6 rounded-3xl w-full max-w-sm text-center">
-            <h3 class="text-lg font-bold mb-2">Scan & Pay</h3>
-            <img src="1000001796.png" class="w-full rounded-xl mb-4 border-4 border-white">
-            <p class="text-sm mb-6">Total: <span id="finalAmount" class="font-bold text-pink-500">₹0</span></p>
-            <button onclick="finalSuccess()" class="w-full bg-green-600 py-3 rounded-xl font-bold mb-3">DONE / PAID</button>
-            <button onclick="closeModal()" class="text-gray-400 text-sm">Cancel</button>
+            <h3 class="text-lg font-bold mb-1">Scan & Pay</h3>
+            <p class="text-[10px] text-gray-400 mb-4 uppercase tracking-wider">Total Amount: <span id="finalAmount" class="text-pink-500 font-bold">₹0</span></p>
+            
+            <img src="1000001796.png" class="w-48 mx-auto rounded-xl mb-4 border-2 border-white/20 shadow-xl">
+            
+            <div class="border-t border-white/10 pt-4 mt-2">
+                <p class="text-xs text-gray-300 mb-3">Upload Payment Screenshot to confirm:</p>
+                <label class="block w-full bg-white/5 border-2 border-dashed border-gray-500 rounded-xl py-3 cursor-pointer hover:bg-white/10 transition">
+                    <span id="uploadText" class="text-xs text-pink-400 font-medium">+ Select Screenshot</span>
+                    <input type="file" id="screenshotInput" accept="image/*" class="hidden" onchange="previewImage(this)" required>
+                </label>
+                <img id="screenshotPreview" src="">
+            </div>
+
+            <button onclick="finalSuccess()" id="doneBtn" class="w-full bg-green-600 py-3 rounded-xl font-bold mt-6 opacity-50 pointer-events-none transition-all">I HAVE PAID</button>
+            <button onclick="closeModal()" class="text-gray-500 text-xs mt-4 block mx-auto underline">Go Back</button>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-gray-800 flex justify-around py-3 z-50 text-gray-500">
+    <div class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-gray-800 flex justify-around py-3 z-50">
         <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg></div>
         <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
     </div>
 
     <script>
         const bagData = [
-            { id: 1, name: "Crochet Pattern Crochet Tote Bag", price: "396" },
-            { id: 2, name: "Crochet Pattern Furry Bag", price: "463" },
-            { id: 3, name: "Crochet Pattern Nuvol Bag", price: "463" },
-            { id: 4, name: "Crochet Pattern Vera Bag", price: "463" },
-            { id: 5, name: "Olive Crochet Hobo Bag", price: "453" },
-            { id: 6, name: "Crochet Pattern City Bag", price: "463" },
-            { id: 7, name: "Crochet Bag Pattern Lydia Bag", price: "453" },
-            { id: 8, name: "Love Letters From Another World", price: "583" },
-            { id: 9, name: "Crochet Pattern Luana Bag", price: "463" },
-            { id: 10, name: "Crochet Pattern Multi-color Striped Bag", price: "447" },
-            { id: 11, name: "Crochet Pattern Mini Fringe Bag", price: "463" },
-            { id: 12, name: "Love Letters From Another World", price: "459" },
-            { id: 13, name: "Crochet Pattern Lecce Bag", price: "463" },
-            { id: 14, name: "Crochet Pattern Ferrara Bag", price: "463" },
-            { id: 15, name: "Crochet Pattern Minime Bag", price: "463" },
-            { id: 16, name: "Crochet Pattern Ronda Bag", price: "463" },
-            { id: 17, name: "Crochet Pattern Vera Bag", price: "463" },
-            { id: 18, name: "Crochet Pattern Ferrara Bag", price: "463" },
-            { id: 19, name: "Crochet Pattern Ferrara Bag", price: "463" }
+            { id: 1, name: "Crochet Pattern Crochet Tote Bag" },
+            { id: 2, name: "Crochet Pattern Furry Bag" },
+            { id: 3, name: "Crochet Pattern Nuvol Bag" },
+            { id: 4, name: "Crochet Pattern Vera Bag" },
+            { id: 5, name: "Olive Crochet Hobo Bag" },
+            { id: 6, name: "Crochet Pattern City Bag" },
+            { id: 7, name: "Crochet Bag Pattern Lydia Bag" },
+            { id: 8, name: "Love Letters From Another World" },
+            { id: 9, name: "Crochet Pattern Luana Bag" },
+            { id: 10, name: "Crochet Pattern Multi-color Striped Bag" },
+            { id: 11, name: "Crochet Pattern Mini Fringe Bag" },
+            { id: 12, name: "Love Letters From Another World" },
+            { id: 13, name: "Crochet Pattern Lecce Bag" },
+            { id: 14, name: "Crochet Pattern Ferrara Bag" },
+            { id: 15, name: "Crochet Pattern Minime Bag" },
+            { id: 16, name: "Crochet Pattern Ronda Bag" },
+            { id: 17, name: "Crochet Pattern Vera Bag" },
+            { id: 18, name: "Crochet Pattern Ferrara Bag" },
+            { id: 19, name: "Crochet Pattern Ferrara Bag" }
         ];
 
         let cart = [];
@@ -125,10 +131,10 @@
                 <div class="product-card">
                     <img src="bag${bag.id}.png" alt="${bag.name}" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
                     <div class="p-2">
-                        <p class="text-[11px] text-gray-400 line-clamp-1 uppercase">${bag.name}</p>
+                        <p class="text-[10px] text-gray-400 line-clamp-1 uppercase tracking-tighter">${bag.name}</p>
                         <div class="flex justify-between items-center mt-1">
                             <span class="font-bold text-white">₹99</span>
-                            <button onclick="addToCart(${bag.id})" class="bg-pink-600 text-white text-[10px] px-3 py-1 rounded-full font-bold">ADD</button>
+                            <button onclick="addToCart(${bag.id})" class="bg-pink-600 text-white text-[9px] px-3 py-1.5 rounded-full font-bold">ADD</button>
                         </div>
                     </div>
                 </div>
@@ -141,29 +147,22 @@
         }
 
         function updateCart() {
-            const list = document.getElementById('cartList');
-            const summary = document.getElementById('cartSummary');
-            const empty = document.getElementById('emptyCart');
             const count = document.getElementById('cartCount');
+            const total = cart.length * 99;
             count.innerText = cart.length;
             count.classList.toggle('hidden', cart.length === 0);
             
-            if (cart.length === 0) {
-                list.innerHTML = '';
-                summary.classList.add('hidden');
-                empty.style.display = 'block';
-                return;
-            }
-            empty.style.display = 'none';
-            summary.classList.remove('hidden');
-            list.innerHTML = cart.map((item, index) => `
+            document.getElementById('emptyCart').style.display = cart.length === 0 ? 'block' : 'none';
+            document.getElementById('cartSummary').classList.toggle('hidden', cart.length === 0);
+            
+            document.getElementById('cartList').innerHTML = cart.map((item, index) => `
                 <div class="flex items-center gap-4 bg-[#2d2833] p-3 rounded-xl">
                     <img src="bag${item.id}.png" class="w-12 h-12 rounded-lg object-cover">
                     <div class="flex-grow text-xs"><p class="font-bold">${item.name}</p><p class="text-pink-500">₹99</p></div>
                     <button onclick="removeFromCart(${index})" class="text-gray-500">✕</button>
                 </div>
             `).join('');
-            const total = cart.length * 99;
+            
             document.getElementById('cartTotal').innerText = '₹' + total;
             document.getElementById('finalAmount').innerText = '₹' + total;
         }
@@ -172,6 +171,23 @@
         function openCheckout() { showPage('checkoutPage'); }
         function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.add('active'); }
         function closeModal() { document.getElementById('qrModal').classList.remove('active'); }
+
+        function previewImage(input) {
+            const preview = document.getElementById('screenshotPreview');
+            const doneBtn = document.getElementById('doneBtn');
+            const uploadText = document.getElementById('uploadText');
+            
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    uploadText.innerText = "Change Screenshot";
+                    doneBtn.classList.remove('opacity-50', 'pointer-events-none');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
 
         function finalSuccess() {
             closeModal();
@@ -182,8 +198,10 @@
                 overlay.style.display = 'none';
                 cart = [];
                 updateCart();
+                document.getElementById('screenshotPreview').style.display = 'none';
+                document.getElementById('doneBtn').classList.add('opacity-50', 'pointer-events-none');
                 showPage('homePage', document.getElementById('homeBtn'));
-            }, 2500); // 2.5 seconds ke liye animation dikhega
+            }, 3000);
         }
 
         function showPage(pageId, navElement) {
