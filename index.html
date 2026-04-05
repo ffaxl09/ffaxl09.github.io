@@ -1,132 +1,68 @@
-
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Craft Store Prototype</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Handmade Bag Store</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
-        body {
-            background-color: #1a161f; /* Screenshot wala dark theme */
-            color: #ffffff;
-            font-family: 'Inter', sans-serif;
-            -webkit-tap-highlight-color: transparent;
-        }
-        .product-card img {
-            border-radius: 16px;
-            width: 100%;
-            aspect-ratio: 4/5;
-            object-fit: cover;
-        }
-        .active-tab {
-            background-color: #2d2833;
-            border-radius: 20px;
-            padding: 4px 20px;
-        }
-        /* Heart animation */
-        .heart-btn:active svg {
-            transform: scale(1.3);
-            fill: #ff4d4d;
-            stroke: #ff4d4d;
-        }
+        body { background-color: #1a161f; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
+        .product-card img { border-radius: 16px; width: 100%; aspect-ratio: 1/1.2; object-fit: cover; background-color: #2d2833; }
+        .heart-btn:active svg { transform: scale(1.3); fill: #ff4d4d; stroke: #ff4d4d; }
     </style>
 </head>
 <body class="pb-24">
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/95 backdrop-blur-md z-50">
-        <div class="flex items-center bg-[#2d2833] rounded-full px-4 py-2.5 shadow-lg border border-gray-700/30">
+        <div class="flex items-center bg-[#2d2833] rounded-full px-4 py-2.5 border border-gray-700/30 shadow-lg">
             <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <input type="text" placeholder="Search for something special" class="bg-transparent border-none focus:outline-none ml-3 text-[15px] w-full text-gray-200 placeholder-gray-500">
-            <div class="w-8 h-8 bg-gradient-to-tr from-purple-500 to-pink-500 rounded-full ml-2 border border-gray-600"></div>
+            <input type="text" placeholder="Search for something special" class="bg-transparent border-none focus:outline-none ml-3 text-[15px] w-full text-gray-200">
         </div>
     </div>
 
     <div class="px-5 py-2">
-        <h2 class="text-[20px] font-semibold tracking-tight text-gray-100">Inspiration at your fingertips</h2>
+        <h2 class="text-[20px] font-semibold tracking-tight">Inspiration at your fingertips</h2>
     </div>
 
-    <div class="grid grid-cols-2 gap-4 px-4 mt-2" id="productGrid">
-        <div class="product-card group relative">
-            <img src="https://images.unsplash.com/photo-1610037773295-364239849925?q=80&w=400&auto=format&fit=crop" alt="Bag 1">
-            <button class="heart-btn absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-md transition-all active:scale-90" onclick="toggleHeart(this)">
-                <svg class="w-4 h-4 text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            </button>
-            <div class="mt-3">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-300 truncate">CROCHET PATTERN FERRARA</p>
-                <p class="text-[15px] font-semibold mt-0.5">₹ 463</p>
-            </div>
-        </div>
+    <div class="grid grid-cols-2 gap-4 px-4 mt-2" id="bagGrid"></div>
 
-        <div class="product-card group relative">
-            <img src="https://images.unsplash.com/photo-1591348113496-045b133b6645?q=80&w=400&auto=format&fit=crop" alt="Bag 2">
-            <button class="heart-btn absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-md transition-all active:scale-90" onclick="toggleHeart(this)">
-                <svg class="w-4 h-4 text-black transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            </button>
-            <div class="mt-3">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-300 truncate">CROCHET PATTERN DIMON</p>
-                <p class="text-[15px] font-semibold mt-0.5">₹ 463</p>
-            </div>
-        </div>
-
-        <div class="product-card group relative">
-            <img src="https://images.unsplash.com/photo-1544816153-36ad49919d62?q=80&w=400&auto=format&fit=crop" alt="Bag 3">
-            <div class="mt-3">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-300">CROCHET PATTERN IRIS</p>
-                <p class="text-[15px] font-semibold mt-0.5 text-green-400">₹ 340 <span class="text-gray-500 line-through text-[12px] ml-1">₹ 453</span></p>
-            </div>
-        </div>
-
-        <div class="product-card group relative">
-            <img src="https://images.unsplash.com/photo-1550241895-511b03ee3144?q=80&w=400&auto=format&fit=crop" alt="Bag 4">
-            <div class="mt-3">
-                <p class="text-[11px] font-bold uppercase tracking-wider text-gray-300">CROCHET PATTERN VERA</p>
-                <p class="text-[15px] font-semibold mt-0.5">₹ 463</p>
-            </div>
-        </div>
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-800 flex justify-around items-end py-3 px-2 z-50">
-        <div class="flex flex-col items-center active-tab cursor-pointer" onclick="setActive(this)">
-            <svg class="w-6 h-6 text-white" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-            <span class="text-[10px] mt-1 font-medium">Home</span>
-        </div>
-        <div class="flex flex-col items-center text-gray-500 cursor-pointer" onclick="setActive(this)">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <span class="text-[10px] mt-1 font-medium">Shop</span>
-        </div>
-        <div class="flex flex-col items-center text-gray-500 cursor-pointer" onclick="setActive(this)">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
-            <span class="text-[10px] mt-1 font-medium">Favs</span>
-        </div>
-        <div class="flex flex-col items-center text-gray-500 cursor-pointer relative" onclick="setActive(this)">
-            <span class="absolute -top-1 -right-1 bg-white text-black text-[9px] font-bold px-1.5 rounded-full">2</span>
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-            <span class="text-[10px] mt-1 font-medium">Cart</span>
-        </div>
+    <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-800 flex justify-around items-center py-3 px-2 z-50 text-gray-500">
+        <div class="flex flex-col items-center text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span class="text-[10px] mt-1">Home</span></div>
+        <div class="flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><span class="text-[10px] mt-1">Shop</span></div>
+        <div class="flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg><span class="text-[10px] mt-1">Favs</span></div>
+        <div class="flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><span class="text-[10px] mt-1">Cart</span></div>
     </div>
 
     <script>
-        // Simple Interaction logic
-        function toggleHeart(btn) {
-            const svg = btn.querySelector('svg');
-            if (svg.getAttribute('fill') === 'none') {
-                svg.setAttribute('fill', '#ff4d4d');
-                svg.style.stroke = '#ff4d4d';
-            } else {
-                svg.setAttribute('fill', 'none');
-                svg.style.stroke = 'currentColor';
-            }
+        const bagGrid = document.getElementById('bagGrid');
+        
+        for (let i = 1; i <= 19; i++) {
+            let price = "463"; // Default Price
+            let name = "CROCHET PATTERN BAG " + i;
+
+            // Screenshots ke hisab se specific prices
+            if (i === 1) price = "396"; 
+            if (i === 5) { price = "340"; name = "OLIVE CROCHET HOBO BAG"; }
+            if (i === 10) { price = "503"; name = "LOVE LETTERS | NEVER SENT"; }
+
+            bagGrid.innerHTML += `
+                <div class="product-card relative">
+                    <img src="bag${i}.png" alt="${name}" loading="lazy">
+                    <button class="heart-btn absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-md" onclick="toggleHeart(this)">
+                        <svg class="w-4 h-4 text-black transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
+                    </button>
+                    <div class="mt-3">
+                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">${name}</p>
+                        <p class="text-[15px] font-semibold mt-0.5">₹ ${price}</p>
+                    </div>
+                </div>
+            `;
         }
 
-        function setActive(el) {
-            document.querySelectorAll('.active-tab').forEach(item => {
-                item.classList.remove('active-tab');
-                item.classList.add('text-gray-500');
-            });
-            el.classList.add('active-tab');
-            el.classList.remove('text-gray-500');
+        function toggleHeart(btn) {
+            const svg = btn.querySelector('svg');
+            svg.getAttribute('fill') === 'none' ? (svg.setAttribute('fill', '#ff4d4d'), svg.style.stroke = '#ff4d4d') : (svg.setAttribute('fill', 'none'), svg.style.stroke = 'currentColor');
         }
     </script>
 </body>
