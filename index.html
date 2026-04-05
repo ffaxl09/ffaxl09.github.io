@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -15,19 +15,20 @@
 <body class="pb-24">
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/95 backdrop-blur-md z-50">
-        <div class="flex items-center bg-[#2d2833] rounded-full px-4 py-2.5 border border-gray-700/30 shadow-lg">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+        <div class="flex items-center bg-[#2d2833] rounded-full px-4 py-2.5 border border-gray-700/30">
+            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
             <input type="text" placeholder="Search for something special" class="bg-transparent border-none focus:outline-none ml-3 text-[15px] w-full text-gray-200">
         </div>
     </div>
 
-    <div class="px-5 py-2">
-        <h2 class="text-[20px] font-semibold tracking-tight">Inspiration at your fingertips</h2>
+    <div class="px-5 py-2 flex justify-between items-center">
+        <h2 class="text-[18px] font-semibold tracking-tight">Inspiration at your fingertips</h2>
+        <span class="bg-pink-600 text-[10px] px-2 py-1 rounded-full font-bold animate-pulse">OFFER ENDING SOON</span>
     </div>
 
     <div class="grid grid-cols-2 gap-4 px-4 mt-2" id="bagGrid"></div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-800 flex justify-around items-center py-3 px-2 z-50 text-gray-500">
+    <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-xl border-t border-gray-800 flex justify-around items-center py-3 z-50 text-gray-500">
         <div class="flex flex-col items-center text-white"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span class="text-[10px] mt-1">Home</span></div>
         <div class="flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><span class="text-[10px] mt-1">Shop</span></div>
         <div class="flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg><span class="text-[10px] mt-1">Favs</span></div>
@@ -37,24 +38,35 @@
     <script>
         const bagGrid = document.getElementById('bagGrid');
         
-        for (let i = 1; i <= 19; i++) {
-            let price = "463"; // Default Price
-            let name = "CROCHET PATTERN BAG " + i;
+        // Aapki di gayi list ke hisaab se names
+        const bagNames = [
+            "Crochet Pattern Crochet Tote Bag", "Crochet Pattern Furry Bag", "Crochet Pattern Nuvol Bag", 
+            "Crochet Pattern Vera Bag", "Olive Crochet Hobo Bag", "Crochet Pattern City Bag", 
+            "Crochet Bag Pattern Lydia Bag", "Love Letters From Another World", "Crochet Pattern Luana Bag", 
+            "Crochet Pattern Multi-color Striped Bag", "Crochet Pattern Mini Fringe Bag", "Love Letters From Another World", 
+            "Crochet Pattern Lecce Bag", "Crochet Pattern Ferrara Bag", "Crochet Pattern Minime Bag", 
+            "Crochet Pattern Ronda Bag", "Crochet Pattern Vera Bag", "Crochet Pattern Ferrara Bag", 
+            "Crochet Pattern Ferrara Bag"
+        ];
 
-            // Screenshots ke hisab se specific prices
-            if (i === 1) price = "396"; 
-            if (i === 5) { price = "340"; name = "OLIVE CROCHET HOBO BAG"; }
-            if (i === 10) { price = "503"; name = "LOVE LETTERS | NEVER SENT"; }
+        for (let i = 1; i <= 19; i++) {
+            let originalPrice = "599";
+            let discountPrice = "99";
+            let currentName = bagNames[i-1]; // Array se naam le raha hai
 
             bagGrid.innerHTML += `
                 <div class="product-card relative">
-                    <img src="bag${i}.png" alt="${name}" loading="lazy">
+                    <img src="bag${i}.png" alt="${currentName}">
                     <button class="heart-btn absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-md" onclick="toggleHeart(this)">
                         <svg class="w-4 h-4 text-black transition-all" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg>
                     </button>
                     <div class="mt-3">
-                        <p class="text-[10px] font-bold uppercase tracking-wider text-gray-400">${name}</p>
-                        <p class="text-[15px] font-semibold mt-0.5">₹ ${price}</p>
+                        <p class="text-[11px] font-bold uppercase tracking-tight text-gray-400 line-clamp-1">${currentName}</p>
+                        <div class="flex items-center gap-2 mt-0.5">
+                            <p class="text-[16px] font-bold text-white">₹${discountPrice}</p>
+                            <p class="text-[12px] font-medium text-gray-500 line-through">₹${originalPrice}</p>
+                            <span class="text-[10px] font-bold text-green-500">83% OFF</span>
+                        </div>
                     </div>
                 </div>
             `;
@@ -62,7 +74,13 @@
 
         function toggleHeart(btn) {
             const svg = btn.querySelector('svg');
-            svg.getAttribute('fill') === 'none' ? (svg.setAttribute('fill', '#ff4d4d'), svg.style.stroke = '#ff4d4d') : (svg.setAttribute('fill', 'none'), svg.style.stroke = 'currentColor');
+            if (svg.getAttribute('fill') === 'none') {
+                svg.setAttribute('fill', '#ff4d4d');
+                svg.style.stroke = '#ff4d4d';
+            } else {
+                svg.setAttribute('fill', 'none');
+                svg.style.stroke = 'currentColor';
+            }
         }
     </script>
 </body>
