@@ -12,46 +12,62 @@
         .nav-item.active { color: white !important; }
         .page-content { display: none; }
         .page-content.active { display: block; }
-        .line-clamp-1 { display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; overflow: hidden; }
+        input, textarea { background: #2d2833 !important; border: 1px solid #3f3947 !important; color: white !important; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
     </style>
 </head>
 <body class="pb-24">
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/95 backdrop-blur-md z-50">
-        <div class="flex items-center bg-[#2d2833] rounded-full px-4 py-2.5 border border-gray-700/30">
-            <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-            <input type="text" placeholder="Search for something special" class="bg-transparent border-none focus:outline-none ml-3 text-[15px] w-full text-gray-200">
+        <div class="flex justify-between items-center bg-[#2d2833] rounded-full px-4 py-2.5">
+            <span class="font-bold text-pink-500 ml-2">BAG STORE</span>
+            <div class="relative" onclick="showPage('cartPage', document.getElementById('cartBtn'))">
+                <svg class="w-6 h-6 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
+                <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-4 h-4 flex items-center justify-center rounded-full hidden">0</span>
+            </div>
         </div>
     </div>
 
-    <div id="homePage" class="page-content active">
-        <div class="px-5 py-2"><h2 class="text-[18px] font-semibold tracking-tight">Inspiration at your fingertips</h2></div>
-        <div class="grid grid-cols-2 gap-4 px-4 mt-2" id="bagGrid"></div>
+    <div id="homePage" class="page-content active px-4">
+        <h2 class="text-[18px] font-semibold my-4">Flash Sale - All ₹99</h2>
+        <div class="grid grid-cols-2 gap-4" id="bagGrid"></div>
     </div>
 
-    <div id="shopPage" class="page-content p-5 text-center mt-10">
-        <h2 class="text-xl font-bold mb-2">Our Collections</h2>
-        <div class="mt-10 p-10 border border-dashed border-gray-700 rounded-xl text-gray-500">New Collections coming soon!</div>
+    <div id="cartPage" class="page-content p-5">
+        <h2 class="text-xl font-bold mb-4 text-center">Your Cart</h2>
+        <div id="cartList" class="space-y-4 mb-6"></div>
+        
+        <div id="cartSummary" class="hidden border-t border-gray-800 pt-4">
+            <div class="flex justify-between text-lg font-bold mb-6"><span>Total:</span><span id="cartTotal">₹0</span></div>
+            <button onclick="openCheckout()" class="w-full bg-pink-600 py-3 rounded-xl font-bold">PROCEED TO CHECKOUT</button>
+        </div>
+
+        <div id="emptyCart" class="text-center text-gray-500 mt-10">Cart is empty!</div>
     </div>
 
-    <div id="favsPage" class="page-content p-5">
-        <h2 class="text-xl font-bold mb-4 text-center">Your Favorites</h2>
-        <div id="favList" class="grid grid-cols-2 gap-4">
+    <div id="checkoutPage" class="page-content p-5">
+        <div class="flex items-center mb-6">
+            <button onclick="showPage('cartPage')" class="mr-4 text-pink-500">← Back</button>
+            <h2 class="text-xl font-bold">Delivery Address</h2>
+        </div>
+        
+        <form class="space-y-4" onsubmit="confirmOrder(event)">
+            <div><label class="text-xs text-gray-400">Full Name</label><input type="text" placeholder="Enter your name" required></div>
+            <div><label class="text-xs text-gray-400">Phone Number</label><input type="tel" placeholder="10-digit mobile number" required pattern="[0-9]{10}"></div>
+            <div><label class="text-xs text-gray-400">Pincode</label><input type="number" placeholder="6-digit pincode" required></div>
+            <div><label class="text-xs text-gray-400">Full Address</label><textarea rows="3" placeholder="House no, Street, Area..." required></textarea></div>
+            
+            <div class="bg-[#2d2833] p-4 rounded-xl mt-6">
+                <p class="text-sm text-gray-400 mb-1">Payment Method</p>
+                <p class="font-bold">Cash on Delivery (COD)</p>
             </div>
-        <div id="emptyFav" class="text-center text-gray-500 mt-10">Items you ❤️ will appear here.</div>
+
+            <button type="submit" class="w-full bg-pink-600 py-4 rounded-xl font-bold mt-6 shadow-lg shadow-pink-600/20 text-lg">CONFIRM ORDER</button>
+        </form>
     </div>
 
-    <div id="cartPage" class="page-content p-5 text-center mt-10">
-        <h2 class="text-xl font-bold mb-4">Shopping Cart</h2>
-        <p class="text-gray-400 mb-6">Your cart is currently empty.</p>
-        <button onclick="showPage('homePage', document.getElementById('homeBtn'))" class="bg-pink-600 px-8 py-3 rounded-full font-bold text-sm">Start Shopping</button>
-    </div>
-
-    <div class="fixed bottom-0 left-0 right-0 bg-black/95 backdrop-blur-xl border-t border-gray-800 flex justify-around items-center py-3 z-50 text-gray-500">
-        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center cursor-pointer"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span class="text-[10px] mt-1">Home</span></div>
-        <div onclick="showPage('shopPage', this)" class="nav-item flex flex-col items-center cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg><span class="text-[10px] mt-1">Shop</span></div>
-        <div onclick="showPage('favsPage', this)" class="nav-item flex flex-col items-center cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path></svg><span class="text-[10px] mt-1">Favs</span></div>
-        <div onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center cursor-pointer"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><span class="text-[10px] mt-1">Cart</span></div>
+    <div class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-gray-800 flex justify-around py-3 z-50 text-gray-500">
+        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span class="text-[10px]">Home</span></div>
+        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><span class="text-[10px]">Cart</span></div>
     </div>
 
     <script>
@@ -77,69 +93,80 @@
             { id: 19, name: "Crochet Pattern Ferrara Bag", price: "463" }
         ];
 
-        let favorites = [];
+        let cart = [];
 
         function renderBags() {
             const grid = document.getElementById('bagGrid');
             grid.innerHTML = bagData.map(bag => `
-                <div class="product-card relative">
-                    <img src="bag${bag.id}.png" alt="${bag.name}" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Image'">
-                    <button class="absolute top-3 right-3 bg-white/90 p-2 rounded-full shadow-md" onclick="toggleFav(${bag.id}, this)">
-                        <svg class="w-4 h-4 transition-colors ${favorites.includes(bag.id) ? 'fill-red-500 stroke-red-500' : 'text-black'}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"></path>
-                        </svg>
-                    </button>
+                <div class="product-card">
+                    <img src="bag${bag.id}.png" alt="${bag.name}" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
                     <div class="mt-3">
-                        <p class="text-[11px] font-bold uppercase text-gray-400 line-clamp-1">${bag.name}</p>
-                        <div class="flex items-center gap-2 mt-0.5">
-                            <p class="text-[16px] font-bold text-white">₹99</p>
-                            <p class="text-[12px] font-medium text-gray-500 line-through">₹${bag.price}</p>
+                        <p class="text-[11px] font-bold text-gray-400 line-clamp-1">${bag.name}</p>
+                        <div class="flex items-center justify-between mt-1">
+                            <div><span class="text-white font-bold">₹99</span></div>
+                            <button onclick="addToCart(${bag.id})" class="bg-white text-black text-[10px] px-3 py-1 rounded-full font-bold">ADD</button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function toggleFav(id, btn) {
-            const index = favorites.indexOf(id);
-            if (index > -1) {
-                favorites.splice(index, 1);
-            } else {
-                favorites.push(id);
-            }
-            renderBags(); // Update home icons
-            updateFavPage(); // Update favs list
+        function addToCart(id) {
+            cart.push(bagData.find(b => b.id === id));
+            updateCart();
         }
 
-        function updateFavPage() {
-            const favList = document.getElementById('favList');
-            const emptyMsg = document.getElementById('emptyFav');
+        function updateCart() {
+            const list = document.getElementById('cartList');
+            const summary = document.getElementById('cartSummary');
+            const empty = document.getElementById('emptyCart');
+            const count = document.getElementById('cartCount');
+            count.innerText = cart.length;
+            count.classList.toggle('hidden', cart.length === 0);
             
-            if (favorites.length === 0) {
-                favList.innerHTML = '';
-                emptyMsg.style.display = 'block';
+            if (cart.length === 0) {
+                list.innerHTML = '';
+                summary.classList.add('hidden');
+                empty.style.display = 'block';
                 return;
             }
-
-            emptyMsg.style.display = 'none';
-            const favItems = bagData.filter(bag => favorites.includes(bag.id));
-            favList.innerHTML = favItems.map(bag => `
-                <div class="product-card relative">
-                    <img src="bag${bag.id}.png" alt="${bag.name}">
-                    <div class="mt-3">
-                        <p class="text-[11px] font-bold uppercase text-gray-400 line-clamp-1">${bag.name}</p>
-                        <p class="text-[14px] font-bold text-white">₹99</p>
-                    </div>
+            empty.style.display = 'none';
+            summary.classList.remove('hidden');
+            list.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center gap-4 bg-[#2d2833] p-3 rounded-xl">
+                    <img src="bag${item.id}.png" class="w-14 h-14 rounded-lg object-cover">
+                    <div class="flex-grow"><p class="text-xs font-bold">${item.name}</p><p class="text-pink-500 font-bold">₹99</p></div>
+                    <button onclick="removeFromCart(${index})" class="text-gray-500 px-2">✕</button>
                 </div>
             `).join('');
+            document.getElementById('cartTotal').innerText = '₹' + (cart.length * 99);
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function openCheckout() {
+            showPage('checkoutPage');
+        }
+
+        function confirmOrder(e) {
+            e.preventDefault();
+            alert("Order Placed Successfully! (Simulation)");
+            cart = [];
+            updateCart();
+            showPage('homePage', document.getElementById('homeBtn'));
         }
 
         function showPage(pageId, navElement) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
             document.getElementById(pageId).classList.add('active');
-            document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-            if(navElement) navElement.classList.add('active');
-            window.scrollTo(0, 0);
+            if(navElement) {
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                navElement.classList.add('active');
+            }
+            window.scrollTo(0,0);
         }
 
         renderBags();
