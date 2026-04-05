@@ -13,9 +13,32 @@
         .page-content { display: none; }
         .page-content.active { display: block; }
         input, textarea { background: #2d2833 !important; border: 1px solid #3f3947 !important; color: white !important; padding: 12px; border-radius: 8px; width: 100%; outline: none; }
+        
+        /* Modal & Animation Styles */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
+        .modal.active { display: flex; }
+        
+        #successOverlay { display: none; position: fixed; inset: 0; background: #1a161f; z-index: 200; align-items: center; justify-content: center; flex-direction: column; }
+        
+        .checkmark-circle {
+            width: 100px; height: 100px; border: 5px solid #22c55e; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            animation: scaleUp 0.5s ease-out forwards;
+        }
+        @keyframes scaleUp { from { transform: scale(0); } to { transform: scale(1); } }
     </style>
 </head>
 <body class="pb-24">
+
+    <div id="successOverlay">
+        <div class="checkmark-circle">
+            <svg class="w-16 h-16 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path>
+            </svg>
+        </div>
+        <h2 class="text-2xl font-bold mt-6 text-white">Order Confirmed!</h2>
+        <p class="text-gray-400 mt-2">Checking payment status...</p>
+    </div>
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/95 backdrop-blur-md z-50">
         <div class="flex justify-between items-center bg-[#2d2833] rounded-full px-4 py-2.5">
@@ -35,39 +58,40 @@
     <div id="cartPage" class="page-content p-5">
         <h2 class="text-xl font-bold mb-4 text-center">Your Cart</h2>
         <div id="cartList" class="space-y-4 mb-6"></div>
-        
         <div id="cartSummary" class="hidden border-t border-gray-800 pt-4">
             <div class="flex justify-between text-lg font-bold mb-6"><span>Total:</span><span id="cartTotal">₹0</span></div>
             <button onclick="openCheckout()" class="w-full bg-pink-600 py-3 rounded-xl font-bold">PROCEED TO CHECKOUT</button>
         </div>
-
         <div id="emptyCart" class="text-center text-gray-500 mt-10">Cart is empty!</div>
     </div>
 
     <div id="checkoutPage" class="page-content p-5">
         <div class="flex items-center mb-6">
             <button onclick="showPage('cartPage')" class="mr-4 text-pink-500">← Back</button>
-            <h2 class="text-xl font-bold">Delivery Address</h2>
+            <h2 class="text-xl font-bold">Address</h2>
         </div>
-        
-        <form class="space-y-4" onsubmit="confirmOrder(event)">
-            <div><label class="text-xs text-gray-400">Full Name</label><input type="text" placeholder="Enter your name" required></div>
-            <div><label class="text-xs text-gray-400">Phone Number</label><input type="tel" placeholder="10-digit mobile number" required pattern="[0-9]{10}"></div>
-            <div><label class="text-xs text-gray-400">Pincode</label><input type="number" placeholder="6-digit pincode" required></div>
-            <div><label class="text-xs text-gray-400">Full Address</label><textarea rows="3" placeholder="House no, Street, Area..." required></textarea></div>
-            
-            <div class="bg-[#2d2833] p-4 rounded-xl mt-6">
-                <p class="text-sm text-gray-400 mb-1">Payment Method</p>
-                <p class="font-bold">Cash on Delivery (COD)</p>
-            </div>
-
-            <button type="submit" class="w-full bg-pink-600 py-4 rounded-xl font-bold mt-6 shadow-lg shadow-pink-600/20 text-lg">CONFIRM ORDER</button>
+        <form class="space-y-4" onsubmit="handlePayment(event)">
+            <input type="text" placeholder="Full Name" required>
+            <input type="tel" placeholder="Phone Number" required pattern="[0-9]{10}">
+            <input type="number" placeholder="Pincode" required>
+            <textarea rows="3" placeholder="Full Address" required></textarea>
+            <button type="submit" class="w-full bg-pink-600 py-4 rounded-xl font-bold mt-6">PAY & CONFIRM</button>
         </form>
     </div>
 
+    <div id="qrModal" class="modal">
+        <div class="bg-[#2d2833] p-6 rounded-3xl w-full max-w-sm text-center">
+            <h3 class="text-lg font-bold mb-2">Scan & Pay</h3>
+            <img src="1000001796.png" class="w-full rounded-xl mb-4 border-4 border-white">
+            <p class="text-sm mb-6">Total: <span id="finalAmount" class="font-bold text-pink-500">₹0</span></p>
+            <button onclick="finalSuccess()" class="w-full bg-green-600 py-3 rounded-xl font-bold mb-3">DONE / PAID</button>
+            <button onclick="closeModal()" class="text-gray-400 text-sm">Cancel</button>
+        </div>
+    </div>
+
     <div class="fixed bottom-0 left-0 right-0 bg-black/95 border-t border-gray-800 flex justify-around py-3 z-50 text-gray-500">
-        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg><span class="text-[10px]">Home</span></div>
-        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg><span class="text-[10px]">Cart</span></div>
+        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg></div>
+        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
     </div>
 
     <script>
@@ -100,11 +124,11 @@
             grid.innerHTML = bagData.map(bag => `
                 <div class="product-card">
                     <img src="bag${bag.id}.png" alt="${bag.name}" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
-                    <div class="mt-3">
-                        <p class="text-[11px] font-bold text-gray-400 line-clamp-1">${bag.name}</p>
-                        <div class="flex items-center justify-between mt-1">
-                            <div><span class="text-white font-bold">₹99</span></div>
-                            <button onclick="addToCart(${bag.id})" class="bg-white text-black text-[10px] px-3 py-1 rounded-full font-bold">ADD</button>
+                    <div class="p-2">
+                        <p class="text-[11px] text-gray-400 line-clamp-1 uppercase">${bag.name}</p>
+                        <div class="flex justify-between items-center mt-1">
+                            <span class="font-bold text-white">₹99</span>
+                            <button onclick="addToCart(${bag.id})" class="bg-pink-600 text-white text-[10px] px-3 py-1 rounded-full font-bold">ADD</button>
                         </div>
                     </div>
                 </div>
@@ -134,29 +158,32 @@
             summary.classList.remove('hidden');
             list.innerHTML = cart.map((item, index) => `
                 <div class="flex items-center gap-4 bg-[#2d2833] p-3 rounded-xl">
-                    <img src="bag${item.id}.png" class="w-14 h-14 rounded-lg object-cover">
-                    <div class="flex-grow"><p class="text-xs font-bold">${item.name}</p><p class="text-pink-500 font-bold">₹99</p></div>
-                    <button onclick="removeFromCart(${index})" class="text-gray-500 px-2">✕</button>
+                    <img src="bag${item.id}.png" class="w-12 h-12 rounded-lg object-cover">
+                    <div class="flex-grow text-xs"><p class="font-bold">${item.name}</p><p class="text-pink-500">₹99</p></div>
+                    <button onclick="removeFromCart(${index})" class="text-gray-500">✕</button>
                 </div>
             `).join('');
-            document.getElementById('cartTotal').innerText = '₹' + (cart.length * 99);
+            const total = cart.length * 99;
+            document.getElementById('cartTotal').innerText = '₹' + total;
+            document.getElementById('finalAmount').innerText = '₹' + total;
         }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
+        function removeFromCart(index) { cart.splice(index, 1); updateCart(); }
+        function openCheckout() { showPage('checkoutPage'); }
+        function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.add('active'); }
+        function closeModal() { document.getElementById('qrModal').classList.remove('active'); }
 
-        function openCheckout() {
-            showPage('checkoutPage');
-        }
-
-        function confirmOrder(e) {
-            e.preventDefault();
-            alert("Order Placed Successfully! (Simulation)");
-            cart = [];
-            updateCart();
-            showPage('homePage', document.getElementById('homeBtn'));
+        function finalSuccess() {
+            closeModal();
+            const overlay = document.getElementById('successOverlay');
+            overlay.style.display = 'flex';
+            
+            setTimeout(() => {
+                overlay.style.display = 'none';
+                cart = [];
+                updateCart();
+                showPage('homePage', document.getElementById('homeBtn'));
+            }, 2500); // 2.5 seconds ke liye animation dikhega
         }
 
         function showPage(pageId, navElement) {
