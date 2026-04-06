@@ -16,11 +16,9 @@
         .page-content.active { display: block; }
         input, textarea { background: #1a161f !important; border: 1px solid #3f3947 !important; color: white !important; padding: 14px; border-radius: 12px; width: 100%; outline: none; }
         
-        /* Modals Base */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
 
-        /* Toast Notification */
         #toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: #ec4899; color: white; padding: 12px 24px; border-radius: 50px;
@@ -30,7 +28,6 @@
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Success Overlay */
         #successOverlay { display: none; position: fixed; inset: 0; background: #1a161f; z-index: 200; align-items: center; justify-content: center; text-align: center; flex-direction: column; }
         .checkmark-circle { width: 90px; height: 90px; border: 5px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: bounceIn 0.6s forwards; }
         @keyframes bounceIn { from { transform: scale(0); } to { transform: scale(1); } }
@@ -54,11 +51,32 @@
 
     <div id="successOverlay">
         <div class="checkmark-circle"><svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg></div>
-        <h2 class="text-3xl font-bold mt-8 fade-in-up">Order Confirmed!</h2>
+        <h2 class="text-3xl font-bold mt-8 fade-in-up">Order Received!</h2>
         <div id="stepMessage" class="mt-6 bg-pink-600/10 border border-pink-500/20 p-5 rounded-2xl hidden mx-4">
-            <p class="text-pink-400 font-bold text-lg">Your order delivery soon, please wait.</p>
+            <p class="text-pink-400 font-bold text-lg">Thank you! Check your WhatsApp for confirmation.</p>
         </div>
-        <p class="text-gray-500 text-sm mt-10 animate-pulse">Wait a moment...</p>
+        <p class="text-gray-500 text-sm mt-10 animate-pulse">Redirecting...</p>
+    </div>
+
+    <div id="paymentModal" class="modal">
+        <div class="bg-[#2d2833] p-8 rounded-[32px] w-full max-w-sm text-center border border-white/10 shadow-2xl">
+            <h3 class="text-xl font-bold mb-2 text-white">Payment & Order</h3>
+            <p class="text-pink-500 font-bold mb-8 text-lg">Total Amount: <span id="payAmount">₹0</span></p>
+            
+            <div class="space-y-4">
+                <button onclick="payViaUPI()" class="w-full bg-white text-black py-4 rounded-2xl font-bold flex items-center justify-center gap-3">
+                    <img src="https://upload.wikimedia.org/wikipedia/commons/e/e1/UPI-Logo-vector.svg" class="h-5">
+                    PAY VIA UPI APP
+                </button>
+
+                <button onclick="payViaWhatsApp()" class="w-full bg-[#25D366] text-white py-4 rounded-2xl font-bold flex items-center justify-center gap-3">
+                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.588-5.946 0-6.556 5.332-11.888 11.888-11.888 3.176 0 6.161 1.237 8.404 3.48s3.48 5.228 3.48 8.404c0 6.556-5.332 11.888-11.888 11.888-2.003 0-3.96-.504-5.694-1.462l-6.389 1.695zm5.951-3.513l.366.217c1.516.901 3.267 1.377 5.064 1.377 5.232 0 9.488-4.256 9.488-9.488 0-2.535-1.01-4.919-2.846-6.754-1.836-1.835-4.219-2.845-6.753-2.845-5.231 0-9.487 4.256-9.487 9.488 0 1.836.529 3.633 1.529 5.163l.238.368-1.002 3.66 3.754-.994z"/></svg>
+                    ORDER ON WHATSAPP
+                </button>
+            </div>
+
+            <button onclick="closePaymentModal()" class="text-gray-500 text-xs mt-8 block mx-auto underline">Go Back</button>
+        </div>
     </div>
 
     <div class="p-4 sticky top-0 bg-[#1a161f]/90 backdrop-blur-md z-50">
@@ -84,7 +102,7 @@
         <div id="cartList" class="space-y-4 mb-8"></div>
         <div id="cartSummary" class="hidden bg-[#2d2833] p-6 rounded-3xl border border-white/5">
             <div class="flex justify-between text-xl font-bold mb-6"><span>Grand Total</span><span id="cartTotal" class="text-pink-500">₹0</span></div>
-            <button onclick="openCheckout()" class="w-full bg-pink-600 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-pink-600/20">PROCEED TO CHECKOUT</button>
+            <button onclick="showPage('checkoutPage')" class="w-full bg-pink-600 py-4 rounded-2xl font-bold text-lg shadow-lg">PROCEED TO CHECKOUT</button>
         </div>
         <div id="emptyCart" class="text-center mt-20">
             <p class="text-gray-500 mb-6">Your cart is feeling lonely!</p>
@@ -97,7 +115,7 @@
             <button onclick="showPage('cartPage')" class="mr-4 text-pink-500 bg-pink-500/10 p-2 rounded-full">←</button>
             <h2 class="text-2xl font-bold">Delivery Info</h2>
         </div>
-        <form class="space-y-5" onsubmit="handlePayment(event)">
+        <form class="space-y-5" onsubmit="handleCheckout(event)">
             <input type="text" placeholder="Full Name" required>
             <input type="tel" placeholder="10-Digit Mobile" required pattern="[0-9]{10}">
             <input type="number" placeholder="Pincode" required>
@@ -106,35 +124,20 @@
         </form>
     </div>
 
-    <div id="qrModal" class="modal">
-        <div class="bg-[#2d2833] p-6 rounded-[32px] w-full max-w-sm text-center border border-white/10 max-h-[90vh] overflow-y-auto my-auto shadow-2xl">
-            <h3 class="text-xl font-bold mb-2">Scan & Pay</h3>
-            <p class="text-pink-500 font-bold mb-6 text-lg">Amount: <span id="finalAmount">₹0</span></p>
-            
-            <img src="1000001796.png" class="w-48 mx-auto rounded-2xl mb-6 border-4 border-white/10 shadow-lg bg-white p-1">
-            
-            <div class="pt-4 border-t border-white/5">
-                <p class="text-xs text-gray-400 mb-4 font-semibold uppercase tracking-widest">Verify Payment</p>
-                <label class="block w-full bg-white/5 border-2 border-dashed border-gray-600 rounded-2xl py-5 cursor-pointer hover:bg-white/10 transition-colors">
-                    <span id="uploadText" class="text-xs text-pink-400 font-bold">+ UPLOAD SCREENSHOT</span>
-                    <input type="file" id="screenshotInput" accept="image/*" class="hidden" onchange="previewImage(this)">
-                </label>
-                <img id="screenshotPreview" src="" class="mt-4 mx-auto max-w-[140px] rounded-xl border-2 border-pink-500 shadow-lg" style="display:none;">
-            </div>
-
-            <button onclick="finalSuccess()" id="doneBtn" class="w-full bg-green-600 py-4 rounded-2xl font-bold mt-8 opacity-50 pointer-events-none transition-all">DONE / PAID</button>
-            <button onclick="closeModal()" class="text-gray-500 text-xs mt-6 block mx-auto underline">Cancel Payment</button>
-        </div>
-    </div>
-
     <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/5 flex justify-around py-4 z-50">
         <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg></div>
         <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
     </div>
 
     <script>
+        // --- APNI DETAILS ---
+        const MY_UPI_ID = "9118886511@ptsbi"; // <--- Apni sahi UPI ID yahan dalein (jaise Paytm/GPay wali)
+        const MY_WHATS_NUMBER = "9118886511"; // <--- Aapka number update kar diya gaya hai
+        // -------------------
+
         const bagData = Array.from({length: 19}, (_, i) => ({ id: i+1, name: `Handmade Pattern Bag ${i+1}` }));
         let cart = [];
+        let userData = {};
 
         function renderBags() {
             const grid = document.getElementById('bagGrid');
@@ -152,25 +155,17 @@
             `).join('');
         }
 
-        function showToast() {
-            const t = document.getElementById('toast');
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
         function addToCart(id) {
             cart.push(bagData.find(b => b.id === id));
             updateCart();
             showToast();
         }
 
-        function openZoom(src, name, id) {
-            document.getElementById('zoomedImg').src = src;
-            document.getElementById('zoomedName').innerText = name;
-            document.getElementById('zoomAddBtn').onclick = () => { addToCart(id); closeZoom(); };
-            document.getElementById('zoomModal').classList.add('active');
+        function showToast() {
+            const t = document.getElementById('toast');
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
         }
-        function closeZoom() { document.getElementById('zoomModal').classList.remove('active'); }
 
         function updateCart() {
             const count = document.getElementById('cartCount');
@@ -182,43 +177,55 @@
                 <div class="flex items-center gap-4 bg-[#2d2833] p-4 rounded-2xl border border-white/5">
                     <img src="bag${item.id}.png" class="w-16 h-16 rounded-xl object-cover">
                     <div class="flex-grow text-sm"><p class="font-bold line-clamp-1">${item.name}</p><p class="text-pink-500 font-bold mt-1">₹99</p></div>
-                    <button onclick="event.stopPropagation(); removeFromCart(${index})" class="text-gray-500 p-2">✕</button>
+                    <button onclick="removeFromCart(${index})" class="text-gray-500 p-2">✕</button>
                 </div>
             `).join('');
-            const total = cart.length * 99;
-            document.getElementById('cartTotal').innerText = '₹' + total;
-            document.getElementById('finalAmount').innerText = '₹' + total;
+            document.getElementById('cartTotal').innerText = '₹' + (cart.length * 99);
         }
 
         function removeFromCart(i) { cart.splice(i, 1); updateCart(); }
-        function openCheckout() { showPage('checkoutPage'); }
-        function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.add('active'); }
-        function closeModal() { document.getElementById('qrModal').classList.remove('active'); }
 
-        function previewImage(input) {
-            const preview = document.getElementById('screenshotPreview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    document.getElementById('doneBtn').classList.remove('opacity-50', 'pointer-events-none');
+        function handleCheckout(e) {
+            e.preventDefault();
+            userData = {
+                name: e.target.elements[0].value,
+                phone: e.target.elements[1].value,
+                pincode: e.target.elements[2].value,
+                address: e.target.elements[3].value
+            };
+            document.getElementById('payAmount').innerText = '₹' + (cart.length * 99);
+            document.getElementById('paymentModal').classList.add('active');
+        }
+
+        function payViaUPI() {
+            const amount = cart.length * 99;
+            const upiUrl = `upi://pay?pa=${MY_UPI_ID}&pn=BagStore&am=${amount}&cu=INR&tn=Order_By_${userData.name}`;
+            window.location.href = upiUrl;
+            
+            setTimeout(() => {
+                if(confirm("Confirm: Payment successful?")) {
+                    finalSuccess();
                 }
-                reader.readAsDataURL(input.files[0]);
-            }
+            }, 5000);
+        }
+
+        function payViaWhatsApp() {
+            let items = cart.map(item => `- ${item.name}`).join('%0A');
+            const total = cart.length * 99;
+            const message = `*NEW ORDER FROM BAG STORE!*%0A%0A*Items:*%0A${items}%0A%0A*Total Bill:* ₹${total}%0A%0A*Customer Details:*%0A👤 Name: ${userData.name}%0A📞 Phone: ${userData.phone}%0A📍 Address: ${userData.address}, ${userData.pincode}`;
+            
+            window.open(`https://wa.me/${MY_WHATS_NUMBER}?text=${message}`, '_blank');
+            finalSuccess();
         }
 
         function finalSuccess() {
-            closeModal();
+            document.getElementById('paymentModal').classList.remove('active');
             const overlay = document.getElementById('successOverlay');
-            const stepMsg = document.getElementById('stepMessage');
             overlay.style.display = 'flex';
-            setTimeout(() => { stepMsg.classList.remove('hidden'); stepMsg.classList.add('fade-in-up'); }, 1500);
+            setTimeout(() => { document.getElementById('stepMessage').classList.remove('hidden'); }, 1000);
             setTimeout(() => {
                 overlay.style.display = 'none';
-                stepMsg.classList.add('hidden');
                 cart = []; updateCart();
-                document.getElementById('screenshotPreview').style.display = 'none';
                 showPage('homePage', document.getElementById('homeBtn'));
             }, 6000);
         }
@@ -232,6 +239,15 @@
             }
             window.scrollTo(0,0);
         }
+
+        function openZoom(src, name, id) {
+            document.getElementById('zoomedImg').src = src;
+            document.getElementById('zoomedName').innerText = name;
+            document.getElementById('zoomAddBtn').onclick = () => { addToCart(id); closeZoom(); };
+            document.getElementById('zoomModal').classList.add('active');
+        }
+        function closeZoom() { document.getElementById('zoomModal').classList.remove('active'); }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.remove('active'); }
 
         renderBags();
     </script>
