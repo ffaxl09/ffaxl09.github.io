@@ -1,238 +1,280 @@
-  <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Handmade Bag Store</title>
+    <title>LuxBag | Premium Handmade Collection</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
     <style>
-        body { background-color: #1a161f; color: white; font-family: 'Inter', sans-serif; overflow-x: hidden; }
-        .product-card { transition: transform 0.2s; background: #2d2833; border-radius: 20px; overflow: hidden; }
-        .product-card:active { transform: scale(0.96); }
-        .product-card img { width: 100%; aspect-ratio: 1/1.2; object-fit: cover; cursor: zoom-in; }
-        
-        .page-content { display: none; }
-        .page-content.active { display: block; }
-        input, textarea { background: #1a161f !important; border: 1px solid #3f3947 !important; color: white !important; padding: 14px; border-radius: 12px; width: 100%; outline: none; }
-        
-        /* Modals Base */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
-        .modal.active { display: flex; }
-
-        /* Toast Notification */
-        #toast {
-            position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
-            background: #ec4899; color: white; padding: 12px 24px; border-radius: 50px;
-            font-weight: bold; font-size: 14px; z-index: 300; opacity: 0;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
-            box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
+        :root {
+            --primary: #f472b6;
+            --bg-dark: #0f172a;
+            --card-bg: #1e293b;
         }
-        #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
 
-        /* Success Overlay */
-        #successOverlay { display: none; position: fixed; inset: 0; background: #1a161f; z-index: 200; align-items: center; justify-content: center; text-align: center; flex-direction: column; }
-        .checkmark-circle { width: 90px; height: 90px; border: 5px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: bounceIn 0.6s forwards; }
-        @keyframes bounceIn { from { transform: scale(0); } to { transform: scale(1); } }
-        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
-        @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
+        body {
+            background-color: var(--bg-dark);
+            color: #f8fafc;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .glass {
+            background: rgba(30, 41, 59, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .product-card {
+            background: var(--card-bg);
+            border-radius: 24px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(244, 114, 182, 0.3);
+        }
+
+        .product-card img {
+            border-radius: 20px;
+            aspect-ratio: 1/1;
+            object-fit: cover;
+        }
+
+        .page-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .page-content.active { display: block; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
+            transition: transform 0.2s;
+        }
+
+        .btn-primary:active { transform: scale(0.95); }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
     </style>
 </head>
 <body class="pb-24">
 
-    <div id="toast">Added to Cart! 🛍️</div>
-
-    <div id="zoomModal" class="modal" onclick="closeZoom()">
-        <div class="relative max-w-sm w-full text-center" onclick="event.stopPropagation()">
-            <button onclick="closeZoom()" class="absolute -top-12 right-0 text-white text-4xl">&times;</button>
-            <img id="zoomedImg" src="" class="mx-auto rounded-3xl shadow-2xl max-h-[65vh] object-contain bg-[#2d2833]">
-            <h3 id="zoomedName" class="mt-6 text-xl font-bold"></h3>
-            <p class="text-pink-500 font-bold text-2xl mt-1">₹99</p>
-            <button id="zoomAddBtn" class="mt-6 w-full bg-pink-600 py-4 rounded-2xl font-bold text-lg shadow-lg">ADD TO CART</button>
-        </div>
+    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full bg-white text-black font-bold shadow-2xl opacity-0 pointer-events-none transition-all duration-300">
+        Item added to bag ✨
     </div>
 
-    <div id="successOverlay">
-        <div class="checkmark-circle"><svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg></div>
-        <h2 class="text-3xl font-bold mt-8 fade-in-up">Order Confirmed!</h2>
-        <div id="stepMessage" class="mt-6 bg-pink-600/10 border border-pink-500/20 p-5 rounded-2xl hidden mx-4">
-            <p class="text-pink-400 font-bold text-lg">Your order delivery soon, please wait.</p>
-        </div>
-        <p class="text-gray-500 text-sm mt-10 animate-pulse">Wait a moment...</p>
-    </div>
-
-    <div class="p-4 sticky top-0 bg-[#1a161f]/90 backdrop-blur-md z-50">
-        <div class="flex justify-between items-center bg-[#2d2833] rounded-full px-5 py-3 border border-white/5">
-            <span class="font-bold text-pink-500 tracking-tighter text-lg">BAG STORE</span>
-            <div class="relative" onclick="showPage('cartPage', document.getElementById('cartBtn'))">
-                <svg class="w-6 h-6 text-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-                <span id="cartCount" class="absolute -top-2 -right-2 bg-pink-600 text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-[#2d2833] hidden font-bold">0</span>
+    <header class="sticky top-0 z-40 px-4 py-4 glass">
+        <div class="max-w-md mx-auto flex justify-between items-center">
+            <div>
+                <h1 class="text-xs uppercase tracking-[0.2em] text-pink-400 font-bold">Boutique</h1>
+                <p class="text-xl font-extrabold tracking-tight">LUX<span class="text-pink-500">BAG</span></p>
             </div>
+            <button onclick="showPage('cartPage')" class="relative p-2 bg-white/5 rounded-full">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+                </svg>
+                <span id="cartCount" class="absolute -top-1 -right-1 bg-pink-500 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main id="homePage" class="page-content active px-4 max-w-md mx-auto">
+        <div class="my-8 p-6 rounded-[2rem] bg-gradient-to-br from-pink-500/20 to-transparent border border-pink-500/10">
+            <h2 class="text-2xl font-bold leading-tight">Artisan Handcrafted <br>Collection</h2>
+            <p class="text-pink-400 text-sm mt-2 font-medium">Limited Flash Sale: All at ₹99</p>
+        </div>
+
+        <div class="grid grid-cols-2 gap-4" id="bagGrid">
+            </div>
+    </main>
+
+    <div id="cartPage" class="page-content px-6 max-w-md mx-auto">
+        <div class="flex items-center gap-4 my-8">
+            <button onclick="showPage('homePage')" class="p-2 bg-white/5 rounded-full">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <h2 class="text-2xl font-bold">Your Bag</h2>
+        </div>
+        
+        <div id="cartList" class="space-y-4"></div>
+
+        <div id="emptyCart" class="text-center py-20 hidden">
+            <div class="text-6xl mb-4">empty...</div>
+            <p class="text-gray-400">Your bag is empty. Let's fill it with style!</p>
+        </div>
+
+        <div id="cartSummary" class="mt-8 p-6 rounded-3xl bg-white/5 border border-white/10 hidden">
+            <div class="flex justify-between items-center mb-6">
+                <span class="text-gray-400">Total Amount</span>
+                <span id="cartTotal" class="text-2xl font-bold text-pink-500">₹0</span>
+            </div>
+            <button onclick="showPage('checkoutPage')" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg shadow-lg shadow-pink-500/20">
+                Checkout Now
+            </button>
         </div>
     </div>
 
-    <div id="homePage" class="page-content active px-4">
-        <div class="flex justify-between items-center my-6 px-1">
-            <h2 class="text-xl font-bold italic">Flash Sale</h2>
-            <span class="bg-pink-600/20 text-pink-500 text-[10px] font-bold px-3 py-1 rounded-full uppercase">All ₹99</span>
-        </div>
-        <div class="grid grid-cols-2 gap-4" id="bagGrid"></div>
-    </div>
-
-    <div id="cartPage" class="page-content p-6">
-        <h2 class="text-2xl font-bold mb-8">Shopping Cart</h2>
-        <div id="cartList" class="space-y-4 mb-8"></div>
-        <div id="cartSummary" class="hidden bg-[#2d2833] p-6 rounded-3xl border border-white/5">
-            <div class="flex justify-between text-xl font-bold mb-6"><span>Grand Total</span><span id="cartTotal" class="text-pink-500">₹0</span></div>
-            <button onclick="openCheckout()" class="w-full bg-pink-600 py-4 rounded-2xl font-bold text-lg shadow-lg shadow-pink-600/20">PROCEED TO CHECKOUT</button>
-        </div>
-        <div id="emptyCart" class="text-center mt-20">
-            <p class="text-gray-500 mb-6">Your cart is feeling lonely!</p>
-            <button onclick="showPage('homePage', document.getElementById('homeBtn'))" class="text-pink-500 font-bold underline">Start Shopping</button>
-        </div>
-    </div>
-
-    <div id="checkoutPage" class="page-content p-6">
-        <div class="flex items-center mb-8">
-            <button onclick="showPage('cartPage')" class="mr-4 text-pink-500 bg-pink-500/10 p-2 rounded-full">←</button>
-            <h2 class="text-2xl font-bold">Delivery Info</h2>
-        </div>
-        <form class="space-y-5" onsubmit="handlePayment(event)">
-            <input type="text" placeholder="Full Name" required>
-            <input type="tel" placeholder="10-Digit Mobile" required pattern="[0-9]{10}">
-            <input type="number" placeholder="Pincode" required>
-            <textarea rows="3" placeholder="Full Address (House no, Street...)" required></textarea>
-            <button type="submit" class="w-full bg-pink-600 py-4 rounded-2xl font-bold mt-8 text-lg">PROCEED TO PAY</button>
+    <div id="checkoutPage" class="page-content px-6 max-w-md mx-auto">
+        <h2 class="text-2xl font-bold my-8">Delivery Details</h2>
+        <form onsubmit="handlePayment(event)" class="space-y-4">
+            <input type="text" placeholder="Full Name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all">
+            <input type="tel" placeholder="Phone Number" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all">
+            <textarea placeholder="Complete Address" rows="4" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all"></textarea>
+            <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg">Pay with UPI</button>
         </form>
     </div>
 
-    <div id="qrModal" class="modal">
-        <div class="bg-[#2d2833] p-6 rounded-[32px] w-full max-w-sm text-center border border-white/10 max-h-[90vh] overflow-y-auto my-auto shadow-2xl">
-            <h3 class="text-xl font-bold mb-2">Scan & Pay</h3>
-            <p class="text-pink-500 font-bold mb-6 text-lg">Amount: <span id="finalAmount">₹0</span></p>
-            
-            <img src="1000001796.png" class="w-48 mx-auto rounded-2xl mb-6 border-4 border-white/10 shadow-lg bg-white p-1">
-            
-            <div class="pt-4 border-t border-white/5">
-                <p class="text-xs text-gray-400 mb-4 font-semibold uppercase tracking-widest">Verify Payment</p>
-                <label class="block w-full bg-white/5 border-2 border-dashed border-gray-600 rounded-2xl py-5 cursor-pointer hover:bg-white/10 transition-colors">
-                    <span id="uploadText" class="text-xs text-pink-400 font-bold">+ UPLOAD SCREENSHOT</span>
-                    <input type="file" id="screenshotInput" accept="image/*" class="hidden" onchange="previewImage(this)">
-                </label>
-                <img id="screenshotPreview" src="" class="mt-4 mx-auto max-w-[140px] rounded-xl border-2 border-pink-500 shadow-lg" style="display:none;">
+    <div id="qrModal" class="modal fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
+        <div class="bg-slate-900 border border-white/10 p-8 rounded-[2.5rem] w-full max-w-sm text-center">
+            <h3 class="text-xl font-bold">Scan to Pay</h3>
+            <p id="finalAmount" class="text-pink-500 text-3xl font-black my-4">₹99</p>
+            <div class="bg-white p-4 rounded-3xl inline-block mb-6">
+                <img src="1000001796.png" class="w-48 h-48" alt="QR Code">
             </div>
+            
+            <label class="block cursor-pointer group">
+                <div class="border-2 border-dashed border-slate-700 group-hover:border-pink-500 rounded-2xl py-4 transition-all">
+                    <span id="uploadText" class="text-sm font-semibold text-slate-400">Upload Screenshot</span>
+                </div>
+                <input type="file" class="hidden" onchange="handleUpload(this)">
+            </label>
 
-            <button onclick="finalSuccess()" id="doneBtn" class="w-full bg-green-600 py-4 rounded-2xl font-bold mt-8 opacity-50 pointer-events-none transition-all">DONE / PAID</button>
-            <button onclick="closeModal()" class="text-gray-500 text-xs mt-6 block mx-auto underline">Cancel Payment</button>
+            <button id="doneBtn" onclick="showSuccess()" class="w-full mt-6 py-4 bg-green-500 rounded-2xl font-bold opacity-30 pointer-events-none transition-all">I have paid</button>
         </div>
     </div>
 
-    <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/5 flex justify-around py-4 z-50">
-        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg></div>
-        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
+    <div id="successPage" class="fixed inset-0 z-[200] bg-slate-900 hidden flex-col items-center justify-center text-center p-6">
+        <div class="w-24 h-24 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 scale-up">
+            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+        </div>
+        <h2 class="text-3xl font-bold">Order Received!</h2>
+        <p class="text-slate-400 mt-2">Check your WhatsApp for tracking details.</p>
+        <button onclick="location.reload()" class="mt-10 text-pink-500 font-bold uppercase tracking-widest">Back to Home</button>
     </div>
 
+    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/5 py-4 px-10 flex justify-around items-center z-40">
+        <button onclick="showPage('homePage')" class="nav-link text-pink-500">
+            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+        </button>
+        <button onclick="showPage('cartPage')" class="nav-link text-slate-500">
+            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        </button>
+    </nav>
+
     <script>
-        const bagData = Array.from({length: 19}, (_, i) => ({ id: i+1, name: `Handmade Pattern Bag ${i+1}` }));
+        const bagData = Array.from({length: 19}, (_, i) => ({
+            id: i + 1,
+            name: `Aura Canvas Bag 0${i + 1}`,
+            price: 99,
+            image: `bag${i + 1}.png`
+        }));
+
         let cart = [];
 
         function renderBags() {
             const grid = document.getElementById('bagGrid');
             grid.innerHTML = bagData.map(bag => `
-                <div class="product-card" onclick="addToCart(${bag.id})">
-                    <img src="bag${bag.id}.png" onclick="event.stopPropagation(); openZoom('bag${bag.id}.png', '${bag.name}', ${bag.id})" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
-                    <div class="p-4">
-                        <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight line-clamp-1">${bag.name}</p>
+                <div class="product-card p-3">
+                    <img src="${bag.image}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=300'">
+                    <div class="mt-3 px-1">
+                        <h3 class="text-sm font-semibold text-slate-200 truncate">${bag.name}</h3>
                         <div class="flex justify-between items-center mt-2">
-                            <span class="font-bold text-white text-lg">₹99</span>
-                            <button class="bg-pink-600 text-white text-[10px] px-4 py-2 rounded-full font-bold">ADD</button>
+                            <span class="text-pink-500 font-bold">₹${bag.price}</span>
+                            <button onclick="addToCart(${bag.id})" class="p-2 bg-pink-500/10 text-pink-500 rounded-xl hover:bg-pink-500 hover:text-white transition-colors">
+                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+                            </button>
                         </div>
                     </div>
                 </div>
             `).join('');
         }
 
-        function showToast() {
-            const t = document.getElementById('toast');
-            t.classList.add('show');
-            setTimeout(() => t.classList.remove('show'), 2000);
-        }
-
-        function addToCart(id) {
-            cart.push(bagData.find(b => b.id === id));
-            updateCart();
-            showToast();
-        }
-
-        function openZoom(src, name, id) {
-            document.getElementById('zoomedImg').src = src;
-            document.getElementById('zoomedName').innerText = name;
-            document.getElementById('zoomAddBtn').onclick = () => { addToCart(id); closeZoom(); };
-            document.getElementById('zoomModal').classList.add('active');
-        }
-        function closeZoom() { document.getElementById('zoomModal').classList.remove('active'); }
-
-        function updateCart() {
-            const count = document.getElementById('cartCount');
-            count.innerText = cart.length;
-            count.classList.toggle('hidden', cart.length === 0);
-            document.getElementById('emptyCart').style.display = cart.length === 0 ? 'block' : 'none';
-            document.getElementById('cartSummary').classList.toggle('hidden', cart.length === 0);
-            document.getElementById('cartList').innerHTML = cart.map((item, index) => `
-                <div class="flex items-center gap-4 bg-[#2d2833] p-4 rounded-2xl border border-white/5">
-                    <img src="bag${item.id}.png" class="w-16 h-16 rounded-xl object-cover">
-                    <div class="flex-grow text-sm"><p class="font-bold line-clamp-1">${item.name}</p><p class="text-pink-500 font-bold mt-1">₹99</p></div>
-                    <button onclick="event.stopPropagation(); removeFromCart(${index})" class="text-gray-500 p-2">✕</button>
-                </div>
-            `).join('');
-            const total = cart.length * 99;
-            document.getElementById('cartTotal').innerText = '₹' + total;
-            document.getElementById('finalAmount').innerText = '₹' + total;
-        }
-
-        function removeFromCart(i) { cart.splice(i, 1); updateCart(); }
-        function openCheckout() { showPage('checkoutPage'); }
-        function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.add('active'); }
-        function closeModal() { document.getElementById('qrModal').classList.remove('active'); }
-
-        function previewImage(input) {
-            const preview = document.getElementById('screenshotPreview');
-            if (input.files && input.files[0]) {
-                const reader = new FileReader();
-                reader.onload = (e) => {
-                    preview.src = e.target.result;
-                    preview.style.display = 'block';
-                    document.getElementById('doneBtn').classList.remove('opacity-50', 'pointer-events-none');
-                }
-                reader.readAsDataURL(input.files[0]);
-            }
-        }
-
-        function finalSuccess() {
-            closeModal();
-            const overlay = document.getElementById('successOverlay');
-            const stepMsg = document.getElementById('stepMessage');
-            overlay.style.display = 'flex';
-            setTimeout(() => { stepMsg.classList.remove('hidden'); stepMsg.classList.add('fade-in-up'); }, 1500);
-            setTimeout(() => {
-                overlay.style.display = 'none';
-                stepMsg.classList.add('hidden');
-                cart = []; updateCart();
-                document.getElementById('screenshotPreview').style.display = 'none';
-                showPage('homePage', document.getElementById('homeBtn'));
-            }, 6000);
-        }
-
-        function showPage(id, nav) {
+        function showPage(pageId) {
             document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(id).classList.add('active');
-            if(nav) {
-                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-                nav.classList.add('active');
-            }
+            document.getElementById(pageId).classList.add('active');
             window.scrollTo(0,0);
         }
 
+        function addToCart(id) {
+            const product = bagData.find(b => b.id === id);
+            cart.push(product);
+            updateCartUI();
+            
+            const toast = document.getElementById('toast');
+            toast.style.opacity = '1';
+            toast.style.transform = 'translate(-50%, 20px)';
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translate(-50%, 0)';
+            }, 2000);
+        }
+
+        function updateCartUI() {
+            const cartCount = document.getElementById('cartCount');
+            const cartList = document.getElementById('cartList');
+            const cartSummary = document.getElementById('cartSummary');
+            const emptyCart = document.getElementById('emptyCart');
+            
+            cartCount.innerText = cart.length;
+            cartCount.classList.toggle('hidden', cart.length === 0);
+            
+            if (cart.length === 0) {
+                emptyCart.classList.remove('hidden');
+                cartSummary.classList.add('hidden');
+                cartList.innerHTML = '';
+            } else {
+                emptyCart.classList.add('hidden');
+                cartSummary.classList.remove('hidden');
+                
+                cartList.innerHTML = cart.map((item, index) => `
+                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
+                        <img src="${item.image}" class="w-20 h-20 rounded-xl object-cover">
+                        <div class="flex-grow">
+                            <h4 class="font-bold text-sm">${item.name}</h4>
+                            <p class="text-pink-500 font-bold">₹${item.price}</p>
+                        </div>
+                        <button onclick="removeFromCart(${index})" class="p-2 text-slate-500">✕</button>
+                    </div>
+                `).join('');
+            }
+            
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cartTotal').innerText = `₹${total}`;
+            document.getElementById('finalAmount').innerText = `₹${total}`;
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCartUI();
+        }
+
+        function handlePayment(e) {
+            e.preventDefault();
+            document.getElementById('qrModal').classList.remove('hidden');
+            document.getElementById('qrModal').classList.add('flex');
+        }
+
+        function handleUpload(input) {
+            if (input.files && input.files[0]) {
+                document.getElementById('uploadText').innerText = "✅ Screenshot Added";
+                document.getElementById('doneBtn').classList.remove('opacity-30', 'pointer-events-none');
+            }
+        }
+
+        function showSuccess() {
+            document.getElementById('qrModal').classList.add('hidden');
+            document.getElementById('successPage').classList.remove('hidden');
+            document.getElementById('successPage').classList.add('flex');
+        }
+
+        // Initialize
         renderBags();
     </script>
 </body>
