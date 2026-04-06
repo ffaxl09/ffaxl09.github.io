@@ -36,10 +36,19 @@
             transform: translateX(-50%) translateY(100px);
         }
         #sale-toast.show { transform: translateX(-50%) translateY(0); }
+
+        /* Zoom Modal Style */
+        #imageModal {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 
 <body class="pb-32">
+
+<div id="imageModal" onclick="closeImage()" class="fixed inset-0 z-[300] hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+    <img id="modalImg" src="" class="max-w-full max-h-[80vh] rounded-3xl shadow-2xl transition-transform duration-300 scale-95">
+</div>
 
 <div id="sale-toast" class="fixed bottom-28 left-1/2 z-[150] w-[90%] max-w-xs bg-white/10 backdrop-blur-xl border border-white/20 p-3 rounded-2xl flex items-center gap-3">
     <div class="w-10 h-10 bg-rose-400 rounded-full flex-shrink-0 flex items-center justify-center text-black font-bold text-xs" id="buyer-initial">R</div>
@@ -141,12 +150,35 @@
 
     let cart = [];
 
-    // Render Function with Stock Counter
+    // New Image Zoom Functions
+    function zoomImage(src) {
+        const modal = document.getElementById('imageModal');
+        const img = document.getElementById('modalImg');
+        img.src = src;
+        modal.classList.remove('hidden');
+        modal.classList.add('flex');
+        setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 10);
+    }
+
+    function closeImage() {
+        const modal = document.getElementById('imageModal');
+        const img = document.getElementById('modalImg');
+        img.classList.replace('scale-100', 'scale-95');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+            modal.classList.remove('flex');
+        }, 200);
+    }
+
+    // Render Function (Added onclick zoom to image)
     function renderBags() {
         const grid = document.getElementById('bagGrid');
         grid.innerHTML = bagData.map(bag => `
             <div class="product-card p-3">
-                <img src="${bag.image}" class="w-full aspect-[4/5] object-cover rounded-2xl mb-3" onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'">
+                <img src="${bag.image}" 
+                     onclick="zoomImage(this.src)" 
+                     class="w-full aspect-[4/5] object-cover rounded-2xl mb-3 cursor-zoom-in" 
+                     onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'">
                 <h3 class="text-xs font-medium truncate">${bag.name}</h3>
                 <div class="flex justify-between items-center mt-2">
                     <span class="text-sm font-bold">₹${bag.price}</span>
@@ -211,7 +243,7 @@
             document.getElementById('cartSummary').classList.remove('hidden');
             list.innerHTML = cart.map((item, i) => `
                 <div class="flex items-center gap-4 bg-white/5 p-3 rounded-2xl">
-                    <img src="${item.image}" class="w-16 h-16 rounded-xl object-cover">
+                    <img src="${item.image}" onclick="zoomImage(this.src)" class="w-16 h-16 rounded-xl object-cover cursor-zoom-in">
                     <div class="flex-grow">
                         <h4 class="text-xs font-medium">${item.name}</h4>
                         <p class="text-sm font-bold text-rose-300">₹${item.price}</p>
