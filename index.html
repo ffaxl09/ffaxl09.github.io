@@ -3,14 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LuxBag | Premium Handmade Collection</title>
+    <title>LUXBAG | Haute Couture</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
     <style>
         :root {
-            --primary: #f472b6;
-            --bg-dark: #0f172a;
-            --card-bg: #1e293b;
+            --primary: #fb7185;
+            --bg-dark: #020617;
+            --card-bg: #0f172a;
         }
 
         body {
@@ -18,295 +19,326 @@
             color: #f8fafc;
             font-family: 'Plus Jakarta Sans', sans-serif;
             -webkit-tap-highlight-color: transparent;
+            overflow-x: hidden;
         }
 
+        /* Premium Glass Effect */
         .glass {
-            background: rgba(30, 41, 59, 0.7);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(20px) saturate(180%);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
         }
 
+        /* Dynamic Product Cards */
         .product-card {
-            background: var(--card-bg);
-            border-radius: 24px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            border: 1px solid rgba(255, 255, 255, 0.03);
+            background: linear-gradient(145deg, #1e293b, #0f172a);
+            border-radius: 28px;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
         }
 
         .product-card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(244, 114, 182, 0.3);
+            transform: translateY(-8px) scale(1.02);
+            border-color: var(--primary);
+            box-shadow: 0 20px 40px rgba(251, 113, 133, 0.15);
+        }
+
+        .product-img-container {
+            overflow: hidden;
+            border-radius: 22px;
+            margin: 8px;
         }
 
         .product-card img {
-            border-radius: 20px;
-            aspect-ratio: 1/1;
-            object-fit: cover;
+            transition: transform 0.6s ease;
         }
 
-        .page-content { display: none; animation: fadeIn 0.4s ease-out; }
+        .product-card:hover img {
+            transform: scale(1.1);
+        }
+
+        /* Page Transitions */
+        .page-content { 
+            display: none; 
+            animation: slideUp 0.5s cubic-bezier(0.4, 0, 0.2, 1); 
+        }
         .page-content.active { display: block; }
 
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(30px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .btn-primary {
-            background: linear-gradient(135deg, #f472b6 0%, #db2777 100%);
-            transition: transform 0.2s;
+        .btn-premium {
+            background: linear-gradient(135deg, #fb7185 0%, #e11d48 100%);
+            box-shadow: 0 10px 20px -10px #fb7185;
+            transition: all 0.3s ease;
         }
 
-        .btn-primary:active { transform: scale(0.95); }
+        .btn-premium:active { transform: scale(0.96); }
 
         /* Custom Scrollbar */
-        ::-webkit-scrollbar { width: 5px; }
+        ::-webkit-scrollbar { width: 4px; }
         ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+
+        /* Animated Badge */
+        .badge-flash {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.6; }
+            100% { opacity: 1; }
+        }
     </style>
 </head>
+
 <body class="pb-24">
 
-    <div id="toast" class="fixed top-6 left-1/2 -translate-x-1/2 z-[100] px-6 py-3 rounded-full bg-white text-black font-bold shadow-2xl opacity-0 pointer-events-none transition-all duration-300">
-        Item added to bag ✨
+<div id="toast" class="fixed top-8 left-1/2 -translate-x-1/2 z-[100] px-8 py-4 rounded-2xl bg-white text-black font-bold shadow-2xl opacity-0 pointer-events-none transition-all duration-500 flex items-center gap-3">
+    <span class="bg-green-500 rounded-full p-1"><svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M5 13l4 4L19 7"/></svg></span>
+    Added to your collection
+</div>
+
+<header class="sticky top-0 z-40 px-6 py-5 glass">
+    <div class="max-w-lg mx-auto flex justify-between items-center">
+        <div>
+            <h1 class="text-[10px] uppercase tracking-[0.4em] text-rose-400 font-black mb-1">Exclusive Boutique</h1>
+            <p class="text-2xl font-black tracking-tighter">LUX<span class="text-rose-500">BAG</span></p>
+        </div>
+        <button onclick="showPage('cartPage')" class="relative p-3 bg-white/5 rounded-2xl border border-white/10 active:scale-90 transition-transform">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+            </svg>
+            <span id="cartCount" class="absolute -top-1 -right-1 bg-rose-500 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full border-2 border-slate-900 hidden">0</span>
+        </button>
+    </div>
+</header>
+
+<main id="homePage" class="page-content active px-4 max-w-lg mx-auto">
+    <div class="my-8 p-8 rounded-[2.5rem] bg-gradient-to-br from-rose-500/20 to-slate-900 border border-rose-500/20 relative overflow-hidden">
+        <div class="relative z-10">
+            <span class="bg-rose-500 text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-widest badge-flash">Limited Offer</span>
+            <h2 class="text-3xl font-extrabold leading-tight mt-3">Artisan <br>Handcrafted</h2>
+            <p class="text-rose-300/80 text-sm mt-2 font-medium italic">Everything at ₹99 today only</p>
+        </div>
+        <div class="absolute -right-10 -bottom-10 w-40 h-40 bg-rose-500/10 rounded-full blur-3xl"></div>
     </div>
 
-    <header class="sticky top-0 z-40 px-4 py-4 glass">
-        <div class="max-w-md mx-auto flex justify-between items-center">
-            <div>
-                <h1 class="text-xs uppercase tracking-[0.2em] text-pink-400 font-bold">Boutique</h1>
-                <p class="text-xl font-extrabold tracking-tight">LUX<span class="text-pink-500">BAG</span></p>
-            </div>
-            <button onclick="showPage('cartPage')" class="relative p-2 bg-white/5 rounded-full">
-                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
-                </svg>
-                <span id="cartCount" class="absolute -top-1 -right-1 bg-pink-500 text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full hidden">0</span>
-            </button>
+    <div class="grid grid-cols-2 gap-5" id="bagGrid">
         </div>
-    </header>
+</main>
 
-    <main id="homePage" class="page-content active px-4 max-w-md mx-auto">
-        <div class="my-8 p-6 rounded-[2rem] bg-gradient-to-br from-pink-500/20 to-transparent border border-pink-500/10">
-            <h2 class="text-2xl font-bold leading-tight">Artisan Handcrafted <br>Collection</h2>
-            <p class="text-pink-400 text-sm mt-2 font-medium">Limited Flash Sale: All at ₹99</p>
-        </div>
-
-        <div class="grid grid-cols-2 gap-4" id="bagGrid">
-            </div>
-    </main>
-
-    <div id="cartPage" class="page-content px-6 max-w-md mx-auto">
-        <div class="flex items-center gap-4 my-8">
-            <button onclick="showPage('homePage')" class="p-2 bg-white/5 rounded-full">
+<div id="cartPage" class="page-content px-6 max-w-lg mx-auto">
+    <div class="flex items-center justify-between my-8">
+        <div class="flex items-center gap-4">
+            <button onclick="showPage('homePage')" class="p-3 bg-white/5 rounded-2xl border border-white/10">
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <h2 class="text-2xl font-bold">Your Bag</h2>
+            <h2 class="text-2xl font-bold">Collection Bag</h2>
         </div>
+        <span class="text-slate-500 text-sm font-medium" id="itemCountLabel">0 Items</span>
+    </div>
+
+    <div id="cartList" class="space-y-5"></div>
+
+    <div id="emptyCart" class="text-center py-32 hidden">
+        <div class="text-6xl mb-6 opacity-20 text-rose-500">
+            <svg class="w-20 h-20 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        </div>
+        <p class="text-slate-400 font-medium">Your collection is empty.</p>
+        <button onclick="showPage('homePage')" class="mt-6 text-rose-500 font-bold text-sm underline underline-offset-8">EXPLORE SHOP</button>
+    </div>
+
+    <div id="cartSummary" class="mt-10 p-8 rounded-[2rem] bg-slate-900 border border-white/5 hidden shadow-2xl">
+        <div class="flex justify-between items-center mb-8">
+            <span class="text-slate-400 font-medium text-lg">Total Investment</span>
+            <span id="cartTotal" class="text-3xl font-black text-rose-500 tracking-tighter">₹0</span>
+        </div>
+        <button onclick="showPage('checkoutPage')" class="w-full btn-premium py-5 rounded-2xl font-bold text-lg uppercase tracking-widest shadow-xl">
+            Proceed to Checkout
+        </button>
+    </div>
+</div>
+
+<div id="checkoutPage" class="page-content px-6 max-w-lg mx-auto">
+    <h2 class="text-3xl font-bold my-10 tracking-tight">Shipping <span class="text-rose-500">Details</span></h2>
+    <form onsubmit="handlePayment(event)" class="space-y-5">
+        <div class="space-y-1">
+            <label class="text-[10px] uppercase font-bold text-slate-500 ml-2 tracking-widest">Full Name</label>
+            <input type="text" placeholder="John Doe" required class="w-full bg-slate-900 border border-white/10 p-5 rounded-2xl focus:border-rose-500 outline-none transition-all placeholder:text-slate-700">
+        </div>
+        <div class="space-y-1">
+            <label class="text-[10px] uppercase font-bold text-slate-500 ml-2 tracking-widest">Phone Number</label>
+            <input type="tel" placeholder="+91 00000 00000" required class="w-full bg-slate-900 border border-white/10 p-5 rounded-2xl focus:border-rose-500 outline-none transition-all placeholder:text-slate-700">
+        </div>
+        <div class="space-y-1">
+            <label class="text-[10px] uppercase font-bold text-slate-500 ml-2 tracking-widest">Shipping Address</label>
+            <textarea placeholder="Enter your full address with landmark..." rows="4" required class="w-full bg-slate-900 border border-white/10 p-5 rounded-2xl focus:border-rose-500 outline-none transition-all placeholder:text-slate-700"></textarea>
+        </div>
+        <button type="submit" class="w-full btn-premium py-5 rounded-2xl font-bold text-lg uppercase mt-6 tracking-widest">Generate UPI QR</button>
+    </form>
+</div>
+
+<div id="qrModal" class="modal fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-slate-950/95 backdrop-blur-xl">
+    <div class="bg-slate-900 border border-white/10 p-10 rounded-[3rem] w-full max-w-sm text-center shadow-3xl">
+        <h3 class="text-xl font-bold tracking-tight">Complete Payment</h3>
+        <p class="text-slate-500 text-xs mt-1">Scan using any UPI App</p>
+        <p id="finalAmount" class="text-rose-500 text-4xl font-black my-6 tracking-tighter">₹99</p>
         
-        <div id="cartList" class="space-y-4"></div>
-
-        <div id="emptyCart" class="text-center py-20 hidden">
-            <div class="text-6xl mb-4">empty...</div>
-            <p class="text-gray-400">Your bag is empty. Let's fill it with style!</p>
+        <div class="bg-white p-5 rounded-[2rem] inline-block mb-8 shadow-inner">
+            <img src="1000001796.png" class="w-48 h-48" alt="QR Code">
         </div>
 
-        <div id="cartSummary" class="mt-8 p-6 rounded-3xl bg-white/5 border border-white/10 hidden">
-            <div class="flex justify-between items-center mb-6">
-                <span class="text-gray-400">Total Amount</span>
-                <span id="cartTotal" class="text-2xl font-bold text-pink-500">₹0</span>
+        <label class="block cursor-pointer group">
+            <div class="border-2 border-dashed border-slate-800 group-hover:border-rose-500/50 rounded-[1.5rem] py-5 transition-all bg-white/5">
+                <span id="uploadText" class="text-xs font-bold text-slate-400 uppercase tracking-widest">Upload Screenshot</span>
             </div>
-            <button onclick="showPage('checkoutPage')" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg shadow-lg shadow-pink-500/20">
-                Checkout Now
-            </button>
-        </div>
-    </div>
+            <input type="file" class="hidden" onchange="handleUpload(this)">
+        </label>
 
-    <div id="checkoutPage" class="page-content px-6 max-w-md mx-auto">
-        <h2 class="text-2xl font-bold my-8">Delivery Details</h2>
-        <form onsubmit="handlePayment(event)" class="space-y-4">
-            <input type="text" placeholder="Full Name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all">
-            <input type="tel" placeholder="Phone Number" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all">
-            <textarea placeholder="Complete Address" rows="4" required class="w-full bg-white/5 border border-white/10 p-4 rounded-2xl focus:border-pink-500 outline-none transition-all"></textarea>
-            <button type="submit" class="w-full btn-primary py-4 rounded-2xl font-bold text-lg">Pay with UPI</button>
-        </form>
+        <button id="doneBtn" onclick="showSuccess()" class="w-full mt-8 py-5 bg-emerald-500 rounded-2xl font-bold text-white opacity-20 pointer-events-none transition-all uppercase tracking-widest shadow-lg shadow-emerald-500/20">I Have Paid</button>
+        <button onclick="document.getElementById('qrModal').classList.add('hidden')" class="mt-4 text-slate-500 text-xs font-bold uppercase tracking-widest">Cancel</button>
     </div>
+</div>
 
-    <div id="qrModal" class="modal fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/90 backdrop-blur-sm">
-        <div class="bg-slate-900 border border-white/10 p-8 rounded-[2.5rem] w-full max-w-sm text-center">
-            <h3 class="text-xl font-bold">Scan to Pay</h3>
-            <p id="finalAmount" class="text-pink-500 text-3xl font-black my-4">₹99</p>
-            <div class="bg-white p-4 rounded-3xl inline-block mb-6">
-                <img src="1000001796.png" class="w-48 h-48" alt="QR Code">
-            </div>
-            
-            <label class="block cursor-pointer group">
-                <div class="border-2 border-dashed border-slate-700 group-hover:border-pink-500 rounded-2xl py-4 transition-all">
-                    <span id="uploadText" class="text-sm font-semibold text-slate-400">Upload Screenshot</span>
+<div id="successPage" class="fixed inset-0 z-[200] bg-slate-950 hidden flex-col items-center justify-center text-center p-8">
+    <div class="w-32 h-32 bg-emerald-500/10 text-emerald-500 rounded-full flex items-center justify-center mb-8 relative">
+        <div class="absolute inset-0 bg-emerald-500/20 rounded-full animate-ping"></div>
+        <svg class="w-16 h-16 relative z-10" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M5 13l4 4L19 7"/></svg>
+    </div>
+    <h2 class="text-4xl font-black tracking-tight">Order Placed!</h2>
+    <p class="text-slate-400 mt-4 max-w-[250px] mx-auto leading-relaxed">Your luxury items are being prepared for dispatch. Tracking details will be sent to your WhatsApp.</p>
+    <button onclick="location.reload()" class="mt-12 px-10 py-4 bg-white/5 border border-white/10 rounded-2xl text-rose-500 font-bold uppercase tracking-widest text-sm">Back to Home</button>
+</div>
+
+<nav class="fixed bottom-0 left-0 right-0 glass py-5 px-12 flex justify-around items-center z-40 rounded-t-[2.5rem]">
+    <button onclick="showPage('homePage')" class="nav-link text-rose-500 transition-transform active:scale-90">
+        <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
+    </button>
+    <button onclick="showPage('cartPage')" class="nav-link text-slate-500 transition-transform active:scale-90">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+    </button>
+</nav>
+
+<script>
+    const bagData = Array.from({length: 19}, (_, i) => ({
+        id: i + 1,
+        name: `Signature Edition 0${i + 1}`,
+        price: 99,
+        image: `bag${i + 1}.png`
+    }));
+
+    let cart = [];
+
+    function renderBags() {
+        const grid = document.getElementById('bagGrid');
+        grid.innerHTML = bagData.map((bag, index) => `
+            <div class="product-card p-3" style="animation-delay: ${index * 0.05}s">
+                <div class="product-img-container shadow-2xl bg-slate-800">
+                    <img src="${bag.image}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=400'">
                 </div>
-                <input type="file" class="hidden" onchange="handleUpload(this)">
-            </label>
-
-            <button id="doneBtn" onclick="showSuccess()" class="w-full mt-6 py-4 bg-green-500 rounded-2xl font-bold opacity-30 pointer-events-none transition-all">I have paid</button>
-        </div>
-    </div>
-
-    <div id="successPage" class="fixed inset-0 z-[200] bg-slate-900 hidden flex-col items-center justify-center text-center p-6">
-        <div class="w-24 h-24 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center mb-6 scale-up">
-            <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M5 13l4 4L19 7"/></svg>
-        </div>
-        <h2 class="text-3xl font-bold">Order Received!</h2>
-        <p class="text-slate-400 mt-2">Check your WhatsApp for tracking details.</p>
-        <button onclick="location.reload()" class="mt-10 text-pink-500 font-bold uppercase tracking-widest">Back to Home</button>
-    </div>
-
-    <nav class="fixed bottom-0 left-0 right-0 glass border-t border-white/5 py-4 px-10 flex justify-around items-center z-40">
-        <button onclick="showPage('homePage')" class="nav-link text-pink-500">
-            <svg class="w-7 h-7" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"/></svg>
-        </button>
-        <button onclick="showPage('cartPage')" class="nav-link text-slate-500">
-            <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
-        </button>
-    </nav>
-
-    <script>
-        const bagData = Array.from({length: 19}, (_, i) => ({
-            id: i + 1,
-            name: `Aura Canvas Bag 0${i + 1}`,
-            price: 99,
-            image: `bag${i + 1}.png`
-        }));
-
-        let cart = [];
-
-        function renderBags() {
-            const grid = document.getElementById('bagGrid');
-            grid.innerHTML = bagData.map(bag => `
-                <div class="product-card p-3">
-                    <img src="${bag.image}" loading="lazy" onerror="this.src='https://images.unsplash.com/photo-1544816155-12df9643f363?auto=format&fit=crop&q=80&w=300'">
-                    <div class="mt-3 px-1">
-                        <h3 class="text-sm font-semibold text-slate-200 truncate">${bag.name}</h3>
-                        <div class="flex justify-between items-center mt-2">
-                            <span class="text-pink-500 font-bold">₹${bag.price}</span>
-                            <button onclick="addToCart(${bag.id})" class="p-2 bg-pink-500/10 text-pink-500 rounded-xl hover:bg-pink-500 hover:text-white transition-colors">
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M12 4v16m8-8H4"/></svg>
-                            </button>
-                        </div>
+                <div class="mt-4 px-2 pb-2">
+                    <h3 class="text-[11px] uppercase tracking-wider font-bold text-slate-400 mb-1">Couture</h3>
+                    <h3 class="text-sm font-bold text-white truncate mb-3">${bag.name}</h3>
+                    <div class="flex justify-between items-center">
+                        <span class="text-rose-500 font-black text-lg">₹${bag.price}</span>
+                        <button onclick="addToCart(${bag.id})" class="w-10 h-10 flex items-center justify-center bg-rose-500 rounded-xl text-white shadow-lg shadow-rose-500/20 active:scale-90 transition-all">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="3" d="M12 4v16m8-8H4"/></svg>
+                        </button>
                     </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function showPage(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo({top: 0, behavior: 'smooth'});
+    }
+
+    function addToCart(id) {
+        const product = bagData.find(b => b.id === id);
+        cart.push(product);
+        updateCartUI();
+        
+        const toast = document.getElementById('toast');
+        toast.style.opacity = '1';
+        toast.style.transform = 'translate(-50%, 20px)';
+        setTimeout(() => {
+            toast.style.opacity = '0';
+            toast.style.transform = 'translate(-50%, 0)';
+        }, 2500);
+    }
+
+    function updateCartUI() {
+        const cartCount = document.getElementById('cartCount');
+        const cartList = document.getElementById('cartList');
+        const cartSummary = document.getElementById('cartSummary');
+        const emptyCart = document.getElementById('emptyCart');
+        const countLabel = document.getElementById('itemCountLabel');
+
+        cartCount.innerText = cart.length;
+        cartCount.classList.toggle('hidden', cart.length === 0);
+        countLabel.innerText = `${cart.length} Items`;
+
+        if (cart.length === 0) {
+            emptyCart.classList.remove('hidden');
+            cartSummary.classList.add('hidden');
+            cartList.innerHTML = '';
+        } else {
+            emptyCart.classList.add('hidden');
+            cartSummary.classList.remove('hidden');
+            cartList.innerHTML = cart.map((item, index) => `
+                <div class="flex items-center gap-5 bg-slate-900/50 p-5 rounded-[2rem] border border-white/5 shadow-xl">
+                    <img src="${item.image}" class="w-24 h-24 rounded-2xl object-cover shadow-lg bg-slate-800" onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=200'">
+                    <div class="flex-grow">
+                        <h4 class="font-bold text-slate-200">${item.name}</h4>
+                        <p class="text-rose-500 font-black text-xl mt-1">₹${item.price}</p>
+                    </div>
+                    <button onclick="removeFromCart(${index})" class="p-3 text-slate-600 hover:text-rose-500 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+                    </button>
                 </div>
             `).join('');
         }
 
-        function showPage(pageId) {
-            document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-            document.getElementById(pageId).classList.add('active');
-            window.scrollTo(0,0);
-        }
+        const total = cart.reduce((sum, item) => sum + item.price, 0);
+        document.getElementById('cartTotal').innerText = `₹${total}`;
+        document.getElementById('finalAmount').innerText = `₹${total}`;
+    }
 
-        function addToCart(id) {
-            const product = bagData.find(b => b.id === id);
-            cart.push(product);
-            updateCartUI();
-            
-            const toast = document.getElementById('toast');
-            toast.style.opacity = '1';
-            toast.style.transform = 'translate(-50%, 20px)';
-            setTimeout(() => {
-                toast.style.opacity = '0';
-                toast.style.transform = 'translate(-50%, 0)';
-            }, 2000);
-        }
+    function removeFromCart(index) {
+        cart.splice(index, 1);
+        updateCartUI();
+    }
 
-        function updateCartUI() {
-            const cartCount = document.getElementById('cartCount');
-            const cartList = document.getElementById('cartList');
-            const cartSummary = document.getElementById('cartSummary');
-            const emptyCart = document.getElementById('emptyCart');
-            
-            cartCount.innerText = cart.length;
-            cartCount.classList.toggle('hidden', cart.length === 0);
-            
-            if (cart.length === 0) {
-                emptyCart.classList.remove('hidden');
-                cartSummary.classList.add('hidden');
-                cartList.innerHTML = '';
-            } else {
-                emptyCart.classList.add('hidden');
-                cartSummary.classList.remove('hidden');
-                
-                cartList.innerHTML = cart.map((item, index) => `
-                    <div class="flex items-center gap-4 bg-white/5 p-4 rounded-2xl border border-white/5">
-                        <img src="${item.image}" class="w-20 h-20 rounded-xl object-cover">
-                        <div class="flex-grow">
-                            <h4 class="font-bold text-sm">${item.name}</h4>
-                            <p class="text-pink-500 font-bold">₹${item.price}</p>
-                        </div>
-                        <button onclick="removeFromCart(${index})" class="p-2 text-slate-500">✕</button>
-                    </div>
-                `).join('');
-            }
-            
-            const total = cart.reduce((sum, item) => sum + item.price, 0);
-            document.getElementById('cartTotal').innerText = `₹${total}`;
-            document.getElementById('finalAmount').innerText = `₹${total}`;
-        }
+    function handlePayment(e) {
+        e.preventDefault();
+        document.getElementById('qrModal').classList.remove('hidden');
+        document.getElementById('qrModal').classList.add('flex');
+    }
 
-        function removeFromCart(index) {
-            cart.splice(index, 1);
-            updateCartUI();
+    function handleUpload(input) {
+        if (input.files && input.files[0]) {
+            document.getElementById('uploadText').innerText = "✓ Receipt Attached";
+            document.getElementById('uploadText').classList.add('text-emerald-500');
+            document.getElementById('doneBtn').classList.remove('opacity-20', 'pointer-events-none');
         }
+    }
 
-        function handlePayment(e) {
-            e.preventDefault();
-            document.getElementById('qrModal').classList.remove('hidden');
-            document.getElementById('qrModal').classList.add('flex');
-        }
+    function showSuccess() {
+        document.getElementById('qrModal').classList.add('hidden');
+        document.getElementById('successPage').classList.remove('hidden');
+        document.getElementById('successPage').classList.add('flex');
+    }
 
-        function handleUpload(input) {
-            if (input.files && input.files[0]) {
-                document.getElementById('uploadText').innerText = "✅ Screenshot Added";
-                document.getElementById('doneBtn').classList.remove('opacity-30', 'pointer-events-none');
-            }
-        }
+    // Initialize
+    renderBags();
+</script>
 
-        function showSuccess() {
-            document.getElementById('qrModal').classList.add('hidden');
-            document.getElementById('successPage').classList.remove('hidden');
-            document.getElementById('successPage').classList.add('flex');
-        }
-
-        // Initialize
-        renderBags();
-    </script>
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
