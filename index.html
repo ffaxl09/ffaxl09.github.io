@@ -133,14 +133,35 @@
     </div>
 
     <script>
-        const bagData = Array.from({length: 19}, (_, i) => ({ id: i+1, name: `Handmade Pattern Bag ${i+1}` }));
+        const bagData = [
+            { id: 1, name: "Crochet Pattern Crochet Tote Bag" },
+            { id: 2, name: "Crochet Pattern Furry Bag" },
+            { id: 3, name: "Crochet Pattern Nuvol Bag" },
+            { id: 4, name: "Crochet Pattern Vera Bag" },
+            { id: 5, name: "Olive Crochet Hobo Bag" },
+            { id: 6, name: "Crochet Pattern City Bag" },
+            { id: 7, name: "Crochet Bag Pattern Lydia Bag" },
+            { id: 8, name: "Love Letters From Another World" },
+            { id: 9, name: "Crochet Pattern Luana Bag" },
+            { id: 10, name: "Crochet Pattern Multi-color Striped Bag" },
+            { id: 11, name: "Crochet Pattern Mini Fringe Bag" },
+            { id: 12, name: "Love Letters From Another World" },
+            { id: 13, name: "Crochet Pattern Lecce Bag" },
+            { id: 14, name: "Crochet Pattern Ferrara Bag" },
+            { id: 15, name: "Crochet Pattern Minime Bag" },
+            { id: 16, name: "Crochet Pattern Ronda Bag" },
+            { id: 17, name: "Crochet Pattern Vera Bag" },
+            { id: 18, name: "Crochet Pattern Ferrara Bag" },
+            { id: 19, name: "Crochet Pattern Ferrara Bag" }
+        ];
+
         let cart = [];
 
         function renderBags() {
             const grid = document.getElementById('bagGrid');
             grid.innerHTML = bagData.map(bag => `
                 <div class="product-card" onclick="addToCart(${bag.id})">
-                    <img src="bag${bag.id}.png" onclick="event.stopPropagation(); openZoom('bag${bag.id}.png', '${bag.name}', ${bag.id})" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
+                    <img src="bag\( {bag.id}.png" onclick="event.stopPropagation(); openZoom('bag \){bag.id}.png', '${bag.name}', ${bag.id})" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
                     <div class="p-4">
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight line-clamp-1">${bag.name}</p>
                         <div class="flex justify-between items-center mt-2">
