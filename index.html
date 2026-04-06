@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>LUXBAG | Haute Couture Sale</title>
+    <title>LUXBAG | Anniversary Archive Sale</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Playfair+Display:ital,wght@0,700;1,700&display=swap" rel="stylesheet">
     
@@ -11,50 +11,30 @@
         :root { --primary: #fda4af; --bg-dark: #050505; }
         body { background-color: var(--bg-dark); color: #f8fafc; font-family: 'Plus Jakarta Sans', sans-serif; overflow-x: hidden; }
         .serif { font-family: 'Playfair Display', serif; }
-
         .glass-nav { background: rgba(5, 5, 5, 0.8); backdrop-filter: blur(20px); border-bottom: 1px solid rgba(255, 255, 255, 0.05); }
-        
-        .product-card {
-            background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%);
-            border-radius: 24px;
-            transition: all 0.4s ease;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-        }
-
-        .pulse-red { animation: pulse 1.5s infinite; color: #fda4af; }
-        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.5; } 100% { opacity: 1; } }
-
+        .product-card { background: linear-gradient(180deg, rgba(255,255,255,0.03) 0%, rgba(255,255,255,0) 100%); border-radius: 24px; transition: all 0.4s ease; border: 1px solid rgba(255, 255, 255, 0.05); }
+        .pulse-red { animation: pulse 1.5s infinite; }
+        @keyframes pulse { 0% { opacity: 1; } 50% { opacity: 0.4; } 100% { opacity: 1; } }
         .page-content { display: none; }
-        .page-content.active { display: block; animation: fadeIn 0.5s ease-out; }
+        .page-content.active { display: block; animation: fadeIn 0.4s ease-out; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-
-        .btn-luxury { background: #fff; color: #000; transition: all 0.3s ease; }
-        .btn-luxury:active { transform: scale(0.95); }
-        
-        #sale-toast {
-            transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55);
-            transform: translateX(-50%) translateY(100px);
-        }
+        .btn-luxury { background: #fff; color: #000; transition: all 0.3s ease; box-shadow: 0 10px 20px rgba(255,255,255,0.1); }
+        #sale-toast { transition: all 0.5s cubic-bezier(0.68, -0.55, 0.27, 1.55); transform: translateX(-50%) translateY(100px); }
         #sale-toast.show { transform: translateX(-50%) translateY(0); }
-
-        /* Zoom Modal Style */
-        #imageModal {
-            transition: opacity 0.3s ease;
-        }
     </style>
 </head>
 
 <body class="pb-32">
 
-<div id="imageModal" onclick="closeImage()" class="fixed inset-0 z-[300] hidden bg-black/90 backdrop-blur-md flex items-center justify-center p-4">
+<div id="imageModal" onclick="closeImage()" class="fixed inset-0 z-[300] hidden bg-black/95 backdrop-blur-md flex items-center justify-center p-4">
     <img id="modalImg" src="" class="max-w-full max-h-[80vh] rounded-3xl shadow-2xl transition-transform duration-300 scale-95">
 </div>
 
-<div id="sale-toast" class="fixed bottom-28 left-1/2 z-[150] w-[90%] max-w-xs bg-white/10 backdrop-blur-xl border border-white/20 p-3 rounded-2xl flex items-center gap-3">
+<div id="sale-toast" class="fixed bottom-28 left-1/2 -translate-x-1/2 z-[150] w-[90%] max-w-xs bg-white/10 backdrop-blur-xl border border-white/20 p-3 rounded-2xl flex items-center gap-3">
     <div class="w-10 h-10 bg-rose-400 rounded-full flex-shrink-0 flex items-center justify-center text-black font-bold text-xs" id="buyer-initial">R</div>
     <div>
         <p class="text-[11px] text-slate-300" id="sale-text">Someone from Mumbai just bought Edition 4</p>
-        <p class="text-[9px] text-rose-300 font-bold uppercase">2 minutes ago</p>
+        <p class="text-[9px] text-rose-300 font-bold uppercase tracking-tighter">Just now • Verified Order</p>
     </div>
 </div>
 
@@ -78,6 +58,7 @@
             <span class="text-[10px] font-bold text-rose-300 uppercase tracking-widest">Sale ends in <span id="header-timer">14:59</span></span>
         </div>
         <h2 class="text-4xl font-light serif leading-tight">The ₹99 <br> <span class="italic text-rose-200">Archive Sale</span></h2>
+        <p class="text-[10px] text-slate-500 mt-2 uppercase tracking-widest">Limited to 1 bag per customer</p>
     </div>
 
     <div class="grid grid-cols-2 gap-4" id="bagGrid"></div>
@@ -96,41 +77,84 @@
             <span class="text-slate-400 font-light">Subtotal</span>
             <span id="cartTotal" class="text-2xl font-medium text-white">₹0</span>
         </div>
-        <button onclick="showPage('checkoutPage')" class="w-full btn-luxury py-4 rounded-2xl font-bold uppercase tracking-widest text-sm">Proceed to Payment</button>
-        <p class="text-[10px] text-center mt-4 text-slate-500 italic">Free Shipping applied to this order ✨</p>
+        <button onclick="showPage('checkoutPage')" class="w-full btn-luxury py-4 rounded-2xl font-bold uppercase tracking-widest text-sm">Proceed to Shipping</button>
+        <p class="text-[10px] text-center mt-4 text-slate-500 italic">Free Express Shipping applied ✨</p>
     </div>
 </div>
 
 <div id="checkoutPage" class="page-content px-6 max-w-lg mx-auto">
     <h2 class="text-3xl font-light serif italic my-10">Shipping</h2>
+    
+    <div class="bg-amber-500/10 border border-amber-500/20 p-3 rounded-xl mb-6">
+        <p class="text-[10px] text-amber-200 text-center leading-tight">
+            ⚠️ <b>High Demand:</b> Items are not reserved until payment is complete. Price will revert to ₹4,999 in <span id="checkout-timer" class="font-bold text-white">02:00</span>.
+        </p>
+    </div>
+
     <form onsubmit="handlePayment(event)" class="space-y-4">
-        <input type="text" placeholder="Name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-rose-300/50">
+        <input type="text" placeholder="Full Name" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-rose-300/50">
         <input type="tel" placeholder="Mobile Number" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-rose-300/50">
-        <textarea placeholder="Address" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-rose-300/50"></textarea>
-        <button type="submit" class="w-full btn-luxury py-4 rounded-xl font-bold uppercase tracking-widest text-sm mt-4">Confirm Order (₹99)</button>
+        <textarea placeholder="Complete Address (with Pincode)" required class="w-full bg-white/5 border border-white/10 p-4 rounded-xl outline-none focus:border-rose-300/50" rows="3"></textarea>
+        
+        <div class="pt-4 space-y-3">
+            <p class="text-[10px] uppercase tracking-widest text-slate-500 font-bold">Select Payment Method</p>
+            
+            <div class="flex items-center justify-between p-4 bg-white/5 border border-rose-300/40 rounded-2xl cursor-pointer">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">💳</span>
+                    <span class="text-sm font-medium">Card / UPI / NetBanking</span>
+                </div>
+                <div class="flex gap-1 opacity-70">
+                    <img src="https://img.icons8.com/color/48/visa.png" class="h-4"/>
+                    <img src="https://img.icons8.com/color/48/mastercard.png" class="h-4"/>
+                </div>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-white/5 border border-white/10 rounded-2xl opacity-40">
+                <div class="flex items-center gap-3">
+                    <span class="text-xl">🚚</span>
+                    <span class="text-sm font-medium text-slate-400">Cash on Delivery</span>
+                </div>
+                <span class="text-[8px] bg-red-500/20 text-red-400 px-2 py-1 rounded">UNAVAILABLE</span>
+            </div>
+        </div>
+
+        <button type="submit" id="payBtn" class="w-full btn-luxury py-4 rounded-xl font-bold uppercase tracking-widest text-sm mt-6">Confirm Order (₹99)</button>
     </form>
 </div>
 
-<div id="qrModal" class="fixed inset-0 z-[100] hidden items-center justify-center p-6 bg-black/95 backdrop-blur-xl">
+<div id="qrModal" class="fixed inset-0 z-[400] hidden items-center justify-center p-6 bg-black/95 backdrop-blur-xl">
     <div class="text-center w-full max-w-sm">
-        <h3 class="text-xl serif mb-6 italic text-rose-200">Complete Your Order</h3>
-        <div class="bg-white p-4 rounded-3xl inline-block mb-6">
-            <img src="1000001796.png" class="w-44 h-44 rounded-xl" alt="UPI QR">
+        <div class="inline-block px-3 py-1 rounded-full bg-rose-500/20 border border-rose-500/40 text-rose-300 text-[10px] font-bold uppercase mb-4 animate-pulse">
+            Secure Gateway Active
         </div>
-        <p class="text-[11px] text-slate-400 mb-6 px-4">Pay <b>₹99</b> and upload the screenshot to verify your address.</p>
+        <h3 class="text-xl serif mb-4 italic text-rose-100">Complete Payment</h3>
+        
+        <div class="bg-white p-4 rounded-3xl inline-block mb-6 shadow-[0_0_50px_rgba(253,164,175,0.3)]">
+            <img src="1000001796.png" class="w-48 h-48 rounded-xl" alt="UPI QR">
+        </div>
+
+        <div class="bg-white/5 rounded-2xl p-4 mb-6 border border-white/10">
+            <p class="text-[11px] text-slate-300 mb-2 font-medium">Pay <b>₹99</b> and upload the screenshot.</p>
+            <p class="text-[9px] text-slate-500 leading-relaxed italic">Our AI verifies screenshots instantly. Address will be locked for shipping once verified.</p>
+        </div>
+
         <input type="file" id="fileInp" class="hidden" onchange="handleUpload()">
-        <button onclick="document.getElementById('fileInp').click()" class="w-full bg-white/10 border border-white/20 py-4 rounded-xl text-xs uppercase tracking-widest mb-4">Upload Screenshot</button>
-        <button id="doneBtn" onclick="showSuccess()" class="w-full py-4 bg-rose-400 text-black rounded-xl font-bold uppercase tracking-widest text-sm opacity-20 pointer-events-none">Verify Now</button>
+        <button onclick="document.getElementById('fileInp').click()" class="w-full bg-white/10 border border-white/20 py-4 rounded-xl text-xs uppercase tracking-widest mb-4 font-bold">Upload Screenshot</button>
+        <button id="doneBtn" onclick="showSuccess()" class="w-full py-4 bg-rose-400 text-black rounded-xl font-bold uppercase tracking-widest text-sm opacity-20 pointer-events-none transition-all">Verify & Place Order</button>
+        
+        <p class="text-[10px] text-slate-500 mt-6">🔒 SSL Encrypted • 1,240 Verified Orders Today</p>
     </div>
 </div>
 
-<div id="successPage" class="fixed inset-0 z-[200] bg-black hidden flex-col items-center justify-center text-center p-8">
-    <h2 class="text-4xl serif italic mb-4">Order Placed!</h2>
-    <p class="text-slate-400 mb-8">We've sent a confirmation to your number.</p>
-    <button onclick="location.reload()" class="btn-luxury px-10 py-3 rounded-full text-xs font-bold uppercase">Great</button>
+<div id="successPage" class="fixed inset-0 z-[500] bg-black hidden flex-col items-center justify-center text-center p-8">
+    <div class="w-20 h-20 bg-green-500/20 text-green-500 rounded-full flex items-center justify-center text-4xl mb-6">✓</div>
+    <h2 class="text-4xl serif italic mb-4">Order Received!</h2>
+    <p class="text-slate-400 mb-8 max-w-xs mx-auto">Your bag is being packed. A tracking link will be sent to your number within 2 hours.</p>
+    <button onclick="location.reload()" class="btn-luxury px-12 py-4 rounded-full text-xs font-bold uppercase tracking-widest">Done</button>
 </div>
 
-<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-64 bg-white/5 backdrop-blur-2xl border border-white/10 py-4 px-8 rounded-full flex justify-between items-center z-40">
+<nav class="fixed bottom-6 left-1/2 -translate-x-1/2 w-64 bg-white/5 backdrop-blur-2xl border border-white/10 py-4 px-8 rounded-full flex justify-between items-center z-40 shadow-2xl">
     <button onclick="showPage('homePage')"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="1.5" d="M3 12l9-9 9 9M5 10v10a1 1 0 001 1h12a1 1 0 001-1V10"/></svg></button>
     <div class="w-px h-4 bg-white/20"></div>
     <button onclick="showPage('cartPage')" class="relative">
@@ -139,88 +163,110 @@
 </nav>
 
 <script>
-    // Configuration
+    // Config & Product Data
     const bagData = Array.from({length: 19}, (_, i) => ({
         id: i + 1,
         name: `Atelier Edition ${i + 1}`,
         price: 99,
+        originalPrice: 4999,
         image: `bag${i + 1}.png`,
-        stock: Math.floor(Math.random() * 5) + 2
+        stock: Math.floor(Math.random() * 4) + 2 // Start with 2-5 stock
     }));
 
     let cart = [];
 
-    // New Image Zoom Functions
+    // Image Zoom
     function zoomImage(src) {
         const modal = document.getElementById('imageModal');
         const img = document.getElementById('modalImg');
         img.src = src;
         modal.classList.remove('hidden');
         modal.classList.add('flex');
-        setTimeout(() => img.classList.replace('scale-95', 'scale-100'), 10);
+        setTimeout(() => img.style.transform = "scale(1)", 10);
     }
 
     function closeImage() {
         const modal = document.getElementById('imageModal');
         const img = document.getElementById('modalImg');
-        img.classList.replace('scale-100', 'scale-95');
-        setTimeout(() => {
-            modal.classList.add('hidden');
-            modal.classList.remove('flex');
-        }, 200);
+        img.style.transform = "scale(0.95)";
+        setTimeout(() => { modal.classList.add('hidden'); modal.classList.remove('flex'); }, 200);
     }
 
-    // Render Function (Added onclick zoom to image)
+    // Render Function
     function renderBags() {
         const grid = document.getElementById('bagGrid');
         grid.innerHTML = bagData.map(bag => `
             <div class="product-card p-3">
-                <img src="${bag.image}" 
-                     onclick="zoomImage(this.src)" 
-                     class="w-full aspect-[4/5] object-cover rounded-2xl mb-3 cursor-zoom-in" 
-                     onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'">
-                <h3 class="text-xs font-medium truncate">${bag.name}</h3>
-                <div class="flex justify-between items-center mt-2">
-                    <span class="text-sm font-bold">₹${bag.price}</span>
-                    <span class="text-[9px] font-bold pulse-red uppercase">${bag.stock} left</span>
+                <div class="relative">
+                    <img src="${bag.image}" onclick="zoomImage(this.src)" class="w-full aspect-[4/5] object-cover rounded-2xl mb-3 cursor-zoom-in" onerror="this.src='https://images.unsplash.com/photo-1584917865442-de89df76afd3?w=400'">
+                    ${bag.stock < 3 ? `<div class="absolute top-2 left-2 bg-red-600 text-white text-[7px] font-black px-2 py-0.5 rounded-full pulse-red">SELLING FAST</div>` : ''}
                 </div>
-                <button onclick="addToCart(${bag.id})" class="w-full mt-3 bg-white text-black text-[10px] font-bold py-2 rounded-lg uppercase">Add to Bag</button>
+                <h3 class="text-[11px] font-medium truncate text-slate-300">${bag.name}</h3>
+                <div class="flex flex-col mt-1">
+                    <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold text-white">₹${bag.price}</span>
+                        <span class="text-[10px] text-slate-600 line-through">₹${bag.originalPrice}</span>
+                    </div>
+                    <div class="flex justify-between items-center mt-1">
+                        <span class="text-[8px] font-bold text-rose-400 uppercase tracking-tighter">${bag.stock} LEFT IN STOCK</span>
+                    </div>
+                </div>
+                <button onclick="addToCart(${bag.id})" class="w-full mt-3 bg-white text-black text-[10px] font-bold py-2.5 rounded-xl uppercase tracking-wider active:scale-95 transition-transform">Add to Bag</button>
             </div>
         `).join('');
     }
 
-    // Social Proof Engine
-    const cities = ["Mumbai", "Delhi", "Bangalore", "Pune", "Chennai", "Jaipur", "Lucknow"];
-    const names = ["A", "S", "P", "K", "M", "V", "R"];
+    // Stock Depletion Simulation (Decreases stock every 10-15 seconds)
+    function simulateStock() {
+        setInterval(() => {
+            const index = Math.floor(Math.random() * bagData.length);
+            if(bagData[index].stock > 1) {
+                bagData[index].stock--;
+                renderBags();
+            }
+        }, 12000);
+    }
+
+    // Social Proof
+    const cities = ["Mumbai", "Delhi", "Bangalore", "Pune", "Chennai", "Jaipur", "Lucknow", "Surat", "Hyderabad"];
+    const names = ["A", "S", "P", "K", "M", "V", "R", "N", "J"];
     
     function triggerSalePopup() {
         const toast = document.getElementById('sale-toast');
         const city = cities[Math.floor(Math.random() * cities.length)];
-        const bag = Math.floor(Math.random() * 19) + 1;
+        const bagNo = Math.floor(Math.random() * 19) + 1;
         const initial = names[Math.floor(Math.random() * names.length)];
         
         document.getElementById('buyer-initial').innerText = initial;
-        document.getElementById('sale-text').innerHTML = `Someone in <b>${city}</b> just bought Edition ${bag}`;
+        document.getElementById('sale-text').innerHTML = `Someone from <b>${city}</b> just bought Edition ${bagNo}`;
         
         toast.classList.add('show');
         setTimeout(() => toast.classList.remove('show'), 4000);
     }
-    setInterval(triggerSalePopup, 12000);
+    setInterval(triggerSalePopup, 10000);
 
     // Timers
     function startTimer(duration, displayId) {
         let timer = duration, minutes, seconds;
-        setInterval(() => {
+        const interval = setInterval(() => {
             minutes = parseInt(timer / 60, 10);
             seconds = parseInt(timer % 60, 10);
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
-            document.getElementById(displayId).textContent = minutes + ":" + seconds;
-            if (--timer < 0) timer = duration;
+            const el = document.getElementById(displayId);
+            if(el) el.textContent = minutes + ":" + seconds;
+            if (--timer < 0) clearInterval(interval);
         }, 1000);
     }
 
-    // Cart Logic
+    // App Logic
+    function showPage(pageId) {
+        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
+        document.getElementById(pageId).classList.add('active');
+        window.scrollTo(0,0);
+        if(pageId === 'checkoutPage') startTimer(120, 'checkout-timer');
+    }
+
     function addToCart(id) {
         const product = bagData.find(b => b.id === id);
         cart.push(product);
@@ -242,32 +288,53 @@
             document.getElementById('emptyCart').classList.add('hidden');
             document.getElementById('cartSummary').classList.remove('hidden');
             list.innerHTML = cart.map((item, i) => `
-                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-2xl">
-                    <img src="${item.image}" onclick="zoomImage(this.src)" class="w-16 h-16 rounded-xl object-cover cursor-zoom-in">
+                <div class="flex items-center gap-4 bg-white/5 p-3 rounded-2xl border border-white/5">
+                    <img src="${item.image}" onclick="zoomImage(this.src)" class="w-16 h-16 rounded-xl object-cover">
                     <div class="flex-grow">
-                        <h4 class="text-xs font-medium">${item.name}</h4>
-                        <p class="text-sm font-bold text-rose-300">₹${item.price}</p>
+                        <h4 class="text-[11px] font-medium text-slate-200">${item.name}</h4>
+                        <p class="text-sm font-bold text-rose-300">₹${item.price} <span class="text-[9px] text-slate-600 line-through font-normal">₹${item.originalPrice}</span></p>
                     </div>
-                    <button onclick="removeFromCart(${i})" class="text-slate-500">×</button>
+                    <button onclick="removeFromCart(${i})" class="w-8 h-8 flex items-center justify-center text-slate-500">×</button>
                 </div>
             `).join('');
         }
         document.getElementById('cartTotal').innerText = `₹${cart.reduce((s, i) => s + i.price, 0)}`;
     }
 
-    function showPage(pageId) {
-        document.querySelectorAll('.page-content').forEach(p => p.classList.remove('active'));
-        document.getElementById(pageId).classList.add('active');
-        window.scrollTo(0,0);
+    function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
+
+    function handlePayment(e) {
+        e.preventDefault();
+        const btn = document.getElementById('payBtn');
+        btn.innerHTML = `<span class="animate-pulse">Connecting Securely...</span>`;
+        btn.style.opacity = "0.7";
+        btn.style.pointerEvents = "none";
+
+        setTimeout(() => {
+            document.getElementById('qrModal').classList.remove('hidden');
+            document.getElementById('qrModal').classList.add('flex');
+            btn.innerHTML = "Confirm Order (₹99)";
+            btn.style.opacity = "1";
+            btn.style.pointerEvents = "auto";
+        }, 1500);
     }
 
-    function removeFromCart(i) { cart.splice(i, 1); updateCartUI(); }
-    function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.remove('hidden'); document.getElementById('qrModal').classList.add('flex'); }
-    function handleUpload() { document.getElementById('doneBtn').classList.remove('opacity-20', 'pointer-events-none'); document.getElementById('doneBtn').style.opacity = "1"; }
-    function showSuccess() { document.getElementById('qrModal').classList.add('hidden'); document.getElementById('successPage').classList.remove('hidden'); document.getElementById('successPage').classList.add('flex'); }
+    function handleUpload() {
+        const btn = document.getElementById('doneBtn');
+        btn.classList.remove('opacity-20', 'pointer-events-none');
+        btn.innerHTML = "Screenshot Detected • Place Order";
+        btn.style.backgroundColor = "#fda4af"; // rose-400
+    }
 
-    // Initialize
+    function showSuccess() {
+        document.getElementById('qrModal').classList.add('hidden');
+        document.getElementById('successPage').classList.remove('hidden');
+        document.getElementById('successPage').classList.add('flex');
+    }
+
+    // Init
     renderBags();
+    simulateStock();
     startTimer(899, 'header-timer');
     startTimer(300, 'cart-timer');
 </script>
