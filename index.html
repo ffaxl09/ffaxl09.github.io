@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+  <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -16,9 +16,11 @@
         .page-content.active { display: block; }
         input, textarea { background: #1a161f !important; border: 1px solid #3f3947 !important; color: white !important; padding: 14px; border-radius: 12px; width: 100%; outline: none; }
         
+        /* Modals Base */
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.95); z-index: 100; align-items: center; justify-content: center; padding: 20px; }
         .modal.active { display: flex; }
 
+        /* Toast Notification */
         #toast {
             position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%) translateY(100px);
             background: #ec4899; color: white; padding: 12px 24px; border-radius: 50px;
@@ -27,13 +29,19 @@
             box-shadow: 0 10px 25px rgba(236, 72, 153, 0.3);
         }
         #toast.show { transform: translateX(-50%) translateY(0); opacity: 1; }
+
+        /* Success Overlay */
+        #successOverlay { display: none; position: fixed; inset: 0; background: #1a161f; z-index: 200; align-items: center; justify-content: center; text-align: center; flex-direction: column; }
+        .checkmark-circle { width: 90px; height: 90px; border: 5px solid #22c55e; border-radius: 50%; display: flex; align-items: center; justify-content: center; animation: bounceIn 0.6s forwards; }
+        @keyframes bounceIn { from { transform: scale(0); } to { transform: scale(1); } }
+        .fade-in-up { animation: fadeInUp 0.5s ease-out forwards; opacity: 0; }
+        @keyframes fadeInUp { from { transform: translateY(20px); opacity: 0; } to { transform: translateY(0); opacity: 1; } }
     </style>
 </head>
 <body class="pb-24">
 
     <div id="toast">Added to Cart! 🛍️</div>
 
-    <!-- Zoom Modal -->
     <div id="zoomModal" class="modal" onclick="closeZoom()">
         <div class="relative max-w-sm w-full text-center" onclick="event.stopPropagation()">
             <button onclick="closeZoom()" class="absolute -top-12 right-0 text-white text-4xl">&times;</button>
@@ -44,14 +52,15 @@
         </div>
     </div>
 
-    <!-- Success Overlay -->
-    <div id="successOverlay" class="hidden fixed inset-0 bg-[#1a161f] z-[200] items-center justify-center text-center flex-col">
+    <div id="successOverlay">
         <div class="checkmark-circle"><svg class="w-14 h-14 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="4" d="M5 13l4 4L19 7"></path></svg></div>
-        <h2 class="text-3xl font-bold mt-8">Order Confirmed!</h2>
-        <p class="text-gray-500 text-sm mt-10 animate-pulse">Thank you for shopping with us!</p>
+        <h2 class="text-3xl font-bold mt-8 fade-in-up">Order Confirmed!</h2>
+        <div id="stepMessage" class="mt-6 bg-pink-600/10 border border-pink-500/20 p-5 rounded-2xl hidden mx-4">
+            <p class="text-pink-400 font-bold text-lg">Your order delivery soon, please wait.</p>
+        </div>
+        <p class="text-gray-500 text-sm mt-10 animate-pulse">Wait a moment...</p>
     </div>
 
-    <!-- Header -->
     <div class="p-4 sticky top-0 bg-[#1a161f]/90 backdrop-blur-md z-50">
         <div class="flex justify-between items-center bg-[#2d2833] rounded-full px-5 py-3 border border-white/5">
             <span class="font-bold text-pink-500 tracking-tighter text-lg">BAG STORE</span>
@@ -62,7 +71,6 @@
         </div>
     </div>
 
-    <!-- Home Page -->
     <div id="homePage" class="page-content active px-4">
         <div class="flex justify-between items-center my-6 px-1">
             <h2 class="text-xl font-bold italic">Flash Sale</h2>
@@ -71,7 +79,6 @@
         <div class="grid grid-cols-2 gap-4" id="bagGrid"></div>
     </div>
 
-    <!-- Cart Page -->
     <div id="cartPage" class="page-content p-6">
         <h2 class="text-2xl font-bold mb-8">Shopping Cart</h2>
         <div id="cartList" class="space-y-4 mb-8"></div>
@@ -85,7 +92,6 @@
         </div>
     </div>
 
-    <!-- Checkout Page -->
     <div id="checkoutPage" class="page-content p-6">
         <div class="flex items-center mb-8">
             <button onclick="showPage('cartPage')" class="mr-4 text-pink-500 bg-pink-500/10 p-2 rounded-full">←</button>
@@ -100,84 +106,41 @@
         </form>
     </div>
 
-    <!-- Payment Modal (Direct UPI + Scan QR) -->
-    <div id="paymentModal" class="modal">
-        <div class="bg-[#2d2833] p-6 rounded-3xl w-full max-w-sm text-center border border-white/10">
-            <h3 class="text-2xl font-bold mb-2">Complete Payment</h3>
-            <p class="text-pink-500 font-bold text-3xl mb-8" id="payAmount">₹0</p>
-
-            <div class="space-y-4">
-                <!-- Direct Auto Pay Button -->
-                <a id="upiLink" href="#" 
-                   class="block w-full bg-gradient-to-r from-green-500 to-emerald-600 py-5 rounded-2xl font-bold text-lg shadow-lg active:scale-95 transition-all flex items-center justify-center gap-2">
-                    💸 Pay with PhonePe / GPay / Paytm
-                </a>
-
-                <div class="text-gray-400 text-sm font-medium">— OR —</div>
-
-                <!-- Scan QR -->
-                <div>
-                    <p class="text-sm text-gray-400 mb-3">Scan QR Code to Pay</p>
-                    <img src="1000001796.png" class="mx-auto w-52 rounded-2xl border-4 border-white/20 shadow-xl" alt="UPI QR">
-                    <p class="text-xs text-gray-500 mt-3">Open PhonePe, GPay or Paytm → Scan & Pay</p>
-                </div>
+    <div id="qrModal" class="modal">
+        <div class="bg-[#2d2833] p-6 rounded-[32px] w-full max-w-sm text-center border border-white/10 max-h-[90vh] overflow-y-auto my-auto shadow-2xl">
+            <h3 class="text-xl font-bold mb-2">Scan & Pay</h3>
+            <p class="text-pink-500 font-bold mb-6 text-lg">Amount: <span id="finalAmount">₹0</span></p>
+            
+            <img src="1000001796.png" class="w-48 mx-auto rounded-2xl mb-6 border-4 border-white/10 shadow-lg bg-white p-1">
+            
+            <div class="pt-4 border-t border-white/5">
+                <p class="text-xs text-gray-400 mb-4 font-semibold uppercase tracking-widest">Verify Payment</p>
+                <label class="block w-full bg-white/5 border-2 border-dashed border-gray-600 rounded-2xl py-5 cursor-pointer hover:bg-white/10 transition-colors">
+                    <span id="uploadText" class="text-xs text-pink-400 font-bold">+ UPLOAD SCREENSHOT</span>
+                    <input type="file" id="screenshotInput" accept="image/*" class="hidden" onchange="previewImage(this)">
+                </label>
+                <img id="screenshotPreview" src="" class="mt-4 mx-auto max-w-[140px] rounded-xl border-2 border-pink-500 shadow-lg" style="display:none;">
             </div>
 
-            <button onclick="finalSuccess()" 
-                    class="w-full mt-8 bg-green-600 py-4 rounded-2xl font-bold text-lg">
-                I HAVE PAID ✅
-            </button>
-
-            <button onclick="closePaymentModal()" 
-                    class="text-gray-400 text-sm mt-6 underline">Cancel</button>
+            <button onclick="finalSuccess()" id="doneBtn" class="w-full bg-green-600 py-4 rounded-2xl font-bold mt-8 opacity-50 pointer-events-none transition-all">DONE / PAID</button>
+            <button onclick="closeModal()" class="text-gray-500 text-xs mt-6 block mx-auto underline">Cancel Payment</button>
         </div>
     </div>
 
-    <!-- Bottom Navigation -->
     <div class="fixed bottom-0 left-0 right-0 bg-black/90 backdrop-blur-md border-t border-white/5 flex justify-around py-4 z-50">
-        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center">
-            <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg>
-        </div>
-        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg>
-        </div>
+        <div id="homeBtn" onclick="showPage('homePage', this)" class="nav-item active flex flex-col items-center"><svg class="w-6 h-6" fill="currentColor" viewBox="0 0 20 20"><path d="M10.707 2.293a1 1 0 00-1.414 0l-7 7a1 1 0 001.414 1.414L4 10.414V17a1 1 0 001 1h2a1 1 0 001-1v-2a1 1 0 011-1h2a1 1 0 011 1v2a1 1 0 001 1h2a1 1 0 001-1v-6.586l.293.293a1 1 0 001.414-1.414l-7-7z"></path></svg></div>
+        <div id="cartBtn" onclick="showPage('cartPage', this)" class="nav-item flex flex-col items-center"><svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"></path></svg></div>
     </div>
 
     <script>
-        const bagData = [
-            { id: 1, name: "Crochet Pattern Crochet Tote Bag" },
-            { id: 2, name: "Crochet Pattern Furry Bag" },
-            { id: 3, name: "Crochet Pattern Nuvol Bag" },
-            { id: 4, name: "Crochet Pattern Vera Bag" },
-            { id: 5, name: "Olive Crochet Hobo Bag" },
-            { id: 6, name: "Crochet Pattern City Bag" },
-            { id: 7, name: "Crochet Bag Pattern Lydia Bag" },
-            { id: 8, name: "Love Letters From Another World" },
-            { id: 9, name: "Crochet Pattern Luana Bag" },
-            { id: 10, name: "Crochet Pattern Multi-color Striped Bag" },
-            { id: 11, name: "Crochet Pattern Mini Fringe Bag" },
-            { id: 12, name: "Love Letters From Another World" },
-            { id: 13, name: "Crochet Pattern Lecce Bag" },
-            { id: 14, name: "Crochet Pattern Ferrara Bag" },
-            { id: 15, name: "Crochet Pattern Minime Bag" },
-            { id: 16, name: "Crochet Pattern Ronda Bag" },
-            { id: 17, name: "Crochet Pattern Vera Bag" },
-            { id: 18, name: "Crochet Pattern Ferrara Bag" },
-            { id: 19, name: "Crochet Pattern Ferrara Bag" }
-        ];
-
+        const bagData = Array.from({length: 19}, (_, i) => ({ id: i+1, name: `Handmade Pattern Bag ${i+1}` }));
         let cart = [];
-        let currentTotal = 0;
-
-        // Your UPI Details
-        const YOUR_UPI_ID = "roddyibo@okicici";
-        const YOUR_NAME = "Ibrahim Ansari";
 
         function renderBags() {
             const grid = document.getElementById('bagGrid');
             grid.innerHTML = bagData.map(bag => `
                 <div class="product-card" onclick="addToCart(${bag.id})">
-                    <img src="bag\( {bag.id}.png" onclick="event.stopPropagation(); openZoom('bag \){bag.id}.png', '${bag.name}', ${bag.id})" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
+                    <img src="bag${bag.id}.png" onclick="event.stopPropagation(); openZoom('bag${bag.id}.png', '${bag.name}', ${bag.id})" onerror="this.src='https://via.placeholder.com/300x360/2d2833/ffffff?text=Bag'">
                     <div class="p-4">
                         <p class="text-[10px] text-gray-400 font-bold uppercase tracking-tight line-clamp-1">${bag.name}</p>
                         <div class="flex justify-between items-center mt-2">
@@ -213,10 +176,8 @@
             const count = document.getElementById('cartCount');
             count.innerText = cart.length;
             count.classList.toggle('hidden', cart.length === 0);
-
             document.getElementById('emptyCart').style.display = cart.length === 0 ? 'block' : 'none';
             document.getElementById('cartSummary').classList.toggle('hidden', cart.length === 0);
-
             document.getElementById('cartList').innerHTML = cart.map((item, index) => `
                 <div class="flex items-center gap-4 bg-[#2d2833] p-4 rounded-2xl border border-white/5">
                     <img src="bag${item.id}.png" class="w-16 h-16 rounded-xl object-cover">
@@ -224,45 +185,42 @@
                     <button onclick="event.stopPropagation(); removeFromCart(${index})" class="text-gray-500 p-2">✕</button>
                 </div>
             `).join('');
-
-            currentTotal = cart.length * 99;
-            document.getElementById('cartTotal').innerText = '₹' + currentTotal;
+            const total = cart.length * 99;
+            document.getElementById('cartTotal').innerText = '₹' + total;
+            document.getElementById('finalAmount').innerText = '₹' + total;
         }
 
         function removeFromCart(i) { cart.splice(i, 1); updateCart(); }
+        function openCheckout() { showPage('checkoutPage'); }
+        function handlePayment(e) { e.preventDefault(); document.getElementById('qrModal').classList.add('active'); }
+        function closeModal() { document.getElementById('qrModal').classList.remove('active'); }
 
-        function openCheckout() { 
-            showPage('checkoutPage'); 
-        }
-
-        function handlePayment(e) {
-            e.preventDefault();
-            document.getElementById('payAmount').innerText = '₹' + currentTotal;
-            
-            // Dynamic UPI Payment Link
-            const upiLink = `upi://pay?pa=\( {YOUR_UPI_ID}&pn= \){encodeURIComponent(YOUR_NAME)}&am=${currentTotal}&cu=INR&tn=Bag%20Store%20Order`;
-            document.getElementById('upiLink').href = upiLink;
-
-            document.getElementById('paymentModal').classList.add('active');
-        }
-
-        function closePaymentModal() {
-            document.getElementById('paymentModal').classList.remove('active');
+        function previewImage(input) {
+            const preview = document.getElementById('screenshotPreview');
+            if (input.files && input.files[0]) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    preview.src = e.target.result;
+                    preview.style.display = 'block';
+                    document.getElementById('doneBtn').classList.remove('opacity-50', 'pointer-events-none');
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
         }
 
         function finalSuccess() {
-            closePaymentModal();
+            closeModal();
             const overlay = document.getElementById('successOverlay');
-            overlay.classList.remove('hidden');
+            const stepMsg = document.getElementById('stepMessage');
             overlay.style.display = 'flex';
-
+            setTimeout(() => { stepMsg.classList.remove('hidden'); stepMsg.classList.add('fade-in-up'); }, 1500);
             setTimeout(() => {
                 overlay.style.display = 'none';
-                overlay.classList.add('hidden');
-                cart = [];
-                updateCart();
+                stepMsg.classList.add('hidden');
+                cart = []; updateCart();
+                document.getElementById('screenshotPreview').style.display = 'none';
                 showPage('homePage', document.getElementById('homeBtn'));
-            }, 4000);
+            }, 6000);
         }
 
         function showPage(id, nav) {
